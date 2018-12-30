@@ -1,0 +1,22 @@
+[package]
+name = "finitediff"
+version = "0.1.0"
+authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "Finite/numerical differentiation"
+documentation = "https://argmin-rs.github.io/finitediff/finitediff/"
+homepage = "https://github.com/finitediff/finitediff"
+repository = "https://github.com/finitediff/finitediff"
+readme = "README.md"
+keywords = ["differentiation", "optimization", "math", "science"]
+categories = ["science"]
+#license-file = "LICENSE-APACHE"
+exclude = [ 
+	".travis.yml",
+	"push_docs",
+]
+
+[dependencies]
+ndarray = { version = "0.12.1", optional = true }
+ndarray-linalg = { version = "0.10.0", optional = true }
