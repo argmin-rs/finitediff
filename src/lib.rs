@@ -323,7 +323,7 @@ mod tests {
     const COMP_ACC: f64 = 1e-6;
 
     #[test]
-    fn test_forward_diff_vec_f64() {
+    fn test_forward_diff_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
         let p = vec![1.0f64, 1.0f64];
         let grad = p.forward_diff(&f);
@@ -344,7 +344,7 @@ mod tests {
 
     #[cfg(feature = "ndarray")]
     #[test]
-    fn test_forward_diff_ndarray_f64() {
+    fn test_forward_diff_ndarray_f64_trait() {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
 
@@ -365,7 +365,7 @@ mod tests {
     }
 
     #[test]
-    fn test_central_diff_vec_f64() {
+    fn test_central_diff_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
         let p = vec![1.0f64, 1.0f64];
         let grad = p.central_diff(&f);
@@ -386,7 +386,7 @@ mod tests {
 
     #[cfg(feature = "ndarray")]
     #[test]
-    fn test_central_diff_ndarray_f64() {
+    fn test_central_diff_ndarray_f64_trait() {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
 
