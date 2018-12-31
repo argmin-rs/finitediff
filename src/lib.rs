@@ -5,9 +5,72 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//! # Finite Differentiation
+//! Finite Differentiation
 //!
-//! TODO: Text.
+//! # References
+//!
+//! Jorge Nocedal and Stephen J. Wright (2006). Numerical Optimization.
+//! Springer. ISBN 0-387-30303-0.
+//!
+//! # Examples
+//!
+//! ## Calculation of the gradient
+//!
+//! ### Using forward differences
+//!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! // Define cost function `f(x) = x_0 + x_1^2`
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
+//!
+//! // Point at which gradient should be calculated
+//! let x = vec![1.0f64, 1.0];
+//!
+//! // Calculate gradient of `f` at `x` using forward differences
+//! let grad = x.forward_diff(&f);
+//!
+//! // Desired solution
+//! let res = vec![1.0f64, 2.0];
+//!
+//! // Check result
+//! (0..2)
+//!     .map(|i| assert!((res[i] - grad[i]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
+//! ### Using central differences
+//!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! // Define cost function `f(x) = x_0 + x_1^2`
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
+//!
+//! // Point at which gradient should be calculated
+//! let x = vec![1.0f64, 1.0];
+//!
+//! // Calculate gradient of `f` at `x` using central differences
+//! let grad = x.central_diff(&f);
+//!
+//! // Desired solution
+//! let res = vec![1.0f64, 2.0];
+//!
+//! // Check result
+//! (0..2)
+//!     .map(|i| assert!((res[i] - grad[i]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
+//! ## Calculation of the Jacobian
+//!
+// //! ```rust
+// //! ```
+//!
+//! ## Calculation of the Hessian
+//!
+// //! ```rust
+// //! ```
 
 #![allow(clippy::ptr_arg)]
 
