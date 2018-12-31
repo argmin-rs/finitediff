@@ -782,45 +782,6 @@ mod tests {
     }
 
     #[test]
-    fn test_forward_hessian_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = forward_hessian_vec_f64(&p, &|d| d.forward_diff(&f));
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = forward_hessian_ndarray_f64(&p, &|d| d.forward_diff(&f));
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
     fn test_forward_hessian_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
@@ -845,45 +806,6 @@ mod tests {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
         let hessian = p.forward_hessian(&|d| d.forward_diff(&f));
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
-    fn test_central_hessian_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = central_hessian_vec_f64(&p, &|d| d.central_diff(&f));
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_hessian_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = central_hessian_ndarray_f64(&p, &|d| d.central_diff(&f));
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
@@ -938,35 +860,6 @@ mod tests {
     }
 
     #[test]
-    fn test_forward_hessian_vec_prod_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = forward_hessian_vec_prod_vec_f64(&x, &|d| d.forward_diff(&f), &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_vec_prod_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = forward_hessian_vec_prod_ndarray_f64(&x, &|d| d.forward_diff(&f), &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
     fn test_forward_hessian_vec_prod_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let x = vec![1.0f64, 1.0, 1.0, 1.0];
@@ -987,35 +880,6 @@ mod tests {
         let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
         let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
         let hessian = x.forward_hessian_vec_prod(&|d| d.forward_diff(&f), &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
-    fn test_central_hessian_vec_prod_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = central_hessian_vec_prod_vec_f64(&x, &|d| d.forward_diff(&f), &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_hessian_vec_prod_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = central_hessian_vec_prod_ndarray_f64(&x, &|d| d.forward_diff(&f), &p);
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1054,45 +918,6 @@ mod tests {
     }
 
     #[test]
-    fn test_forward_hessian_nograd_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = forward_hessian_nograd_vec_f64(&p, &f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_nograd_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = forward_hessian_nograd_ndarray_f64(&p, &f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
     fn test_forward_hessian_nograd_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
@@ -1117,47 +942,6 @@ mod tests {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
         let hessian = p.forward_hessian_nograd(&f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[test]
-    fn test_forward_hessian_nograd_sparse_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
-        let hessian = forward_hessian_nograd_sparse_vec_f64(&p, &f, indices);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_nograd_sparse_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
-        let hessian = forward_hessian_nograd_sparse_ndarray_f64(&p, &f, indices);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
