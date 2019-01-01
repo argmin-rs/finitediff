@@ -144,4 +144,12 @@ mod tests {
             black_box(x.forward_jacobian(&cost_multi_ndarray_f64));
         });
     }
+
+    #[bench]
+    fn central_jacobian_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(x.central_jacobian(&cost_multi_vec_f64));
+        });
+    }
 }
