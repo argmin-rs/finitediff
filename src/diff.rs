@@ -73,15 +73,11 @@ pub fn central_diff_ndarray_f64(
     x: &ndarray::Array1<f64>,
     f: &Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array1<f64> {
-    let n = x.len();
-    (0..n)
+    let mut xt = x.clone();
+    (0..x.len())
         .map(|i| {
-            let mut x1 = x.clone();
-            let mut x2 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            x2[i] -= EPS_F64.sqrt();
-            let fx1 = (f)(&x1);
-            let fx2 = (f)(&x2);
+            let fx1 = mod_and_calc_ndarray_f64(&mut xt, f, i, EPS_F64.sqrt());
+            let fx2 = mod_and_calc_ndarray_f64(&mut xt, f, i, -EPS_F64.sqrt());
             (fx1 - fx2) / (2.0 * EPS_F64.sqrt())
         })
         .collect()

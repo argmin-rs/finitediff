@@ -73,4 +73,13 @@ mod tests {
             black_box(x.central_diff(&cost_vec_f64));
         });
     }
+
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn central_diff_ndarray_f64(b: &mut Bencher) {
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        b.iter(|| {
+            black_box(x.central_diff(&cost_ndarray_f64));
+        });
+    }
 }
