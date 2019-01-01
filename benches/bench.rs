@@ -23,11 +23,28 @@ fn cost_ndarray_f64(x: &ndarray::Array1<f64>) -> f64 {
     x.iter().fold(0.0, |a, acc| a + acc)
 }
 
+fn cost_multi_vec_f64(x: &Vec<f64>) -> Vec<f64> {
+    x.clone()
+}
+
+#[cfg(feature = "ndarray")]
+fn cost_multi_ndarray_f64(x: &ndarray::Array1<f64>) -> ndarray::Array1<f64> {
+    x.clone()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use finitediff::*;
     use test::{black_box, Bencher};
+
+    #[bench]
+    fn cost_func_vec_f64_1(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(cost_vec_f64(&x));
+        });
+    }
 
     #[bench]
     fn cost_func_vec_f64_np1(b: &mut Bencher) {
@@ -45,6 +62,34 @@ mod tests {
         b.iter(|| {
             for _ in 0..(2 * MASSIVENESS) {
                 black_box(cost_vec_f64(&x));
+            }
+        });
+    }
+
+    #[bench]
+    fn cost_func_multi_vec_f64_1(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(cost_multi_vec_f64(&x));
+        });
+    }
+
+    #[bench]
+    fn cost_func_multi_vec_f64_np1(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            for _ in 0..(MASSIVENESS + 1) {
+                black_box(cost_multi_vec_f64(&x));
+            }
+        });
+    }
+
+    #[bench]
+    fn cost_func_multi_vec_f64_2n(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            for _ in 0..(2 * MASSIVENESS) {
+                black_box(cost_multi_vec_f64(&x));
             }
         });
     }
@@ -80,6 +125,14 @@ mod tests {
         let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.central_diff(&cost_ndarray_f64));
+        });
+    }
+
+    #[bench]
+    fn forward_jacobian_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(x.forward_jacobian(&cost_multi_vec_f64));
         });
     }
 }

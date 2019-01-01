@@ -6,16 +6,15 @@
 // copied, modified, or distributed except according to those terms.
 
 use crate::pert::*;
+use crate::utils::*;
 use crate::EPS_F64;
 
 pub fn forward_jacobian_vec_f64(x: &Vec<f64>, fs: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
     let fx = (fs)(&x);
-    let n = x.len();
-    (0..n)
+    let mut xt = x.clone();
+    (0..x.len())
         .map(|i| {
-            let mut x1 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            let fx1 = (fs)(&x1);
+            let fx1 = mod_and_calc_vec_f64(&mut xt, fs, i, EPS_F64.sqrt());
             fx1.iter()
                 .zip(fx.iter())
                 .map(|(a, b)| (a - b) / EPS_F64.sqrt())
