@@ -63,18 +63,19 @@ pub fn central_jacobian_ndarray_f64(
     x: &ndarray::Array1<f64>,
     fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
-    // TODO: get rid of this!
+    let mut xt = x.clone();
+
+    // TODO: get rid of this! fx is only needed to calculate rn in order to be able to allocate the
+    // array for the jacobian.
     let fx = (fs)(&x);
+
     let rn = fx.len();
     let n = x.len();
-    let mut out = ndarray::Array2::zeros((n, rn));
+
+    let mut out = unsafe { ndarray::Array2::uninitialized((n, rn)) };
     for i in 0..n {
-        let mut x1 = x.clone();
-        let mut x2 = x.clone();
-        x1[i] += EPS_F64.sqrt();
-        x2[i] -= EPS_F64.sqrt();
-        let fx1 = (fs)(&x1);
-        let fx2 = (fs)(&x2);
+        let fx1 = mod_and_calc_ndarray_f64(&mut xt, fs, i, EPS_F64.sqrt());
+        let fx2 = mod_and_calc_ndarray_f64(&mut xt, fs, i, -EPS_F64.sqrt());
         for j in 0..rn {
             out[(i, j)] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
         }
