@@ -9,12 +9,14 @@ use crate::EPS_F64;
 
 pub fn forward_diff_vec_f64(p: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
     let fx = (f)(&p);
+    let mut xt = p.clone();
     let n = p.len();
     (0..n)
         .map(|i| {
-            let mut x1 = p.clone();
-            x1[i] += EPS_F64.sqrt();
-            let fx1 = (f)(&x1);
+            let xtmp = xt[i];
+            xt[i] = xtmp + EPS_F64.sqrt();
+            let fx1 = (f)(&xt);
+            xt[i] = xtmp;
             (fx1 - fx) / (EPS_F64.sqrt())
         })
         .collect()
