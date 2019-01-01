@@ -29,15 +29,14 @@ pub fn forward_jacobian_ndarray_f64(
     fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
     let fx = (fs)(&x);
+    let mut xt = x.clone();
     let rn = fx.len();
     let n = x.len();
-    let mut out = ndarray::Array2::zeros((rn, n));
+    let mut out = ndarray::Array2::zeros((n, rn));
     for i in 0..n {
-        let mut x1 = x.clone();
-        x1[i] += EPS_F64.sqrt();
-        let fx1 = (fs)(&x1);
+        let fx1 = mod_and_calc_ndarray_f64(&mut xt, fs, i, EPS_F64.sqrt());
         for j in 0..rn {
-            out[(j, i)] = (fx1[j] - fx[j]) / EPS_F64.sqrt();
+            out[(i, j)] = (fx1[j] - fx[j]) / EPS_F64.sqrt();
         }
     }
     out
@@ -313,8 +312,10 @@ mod tests {
                 3.0 * (x[5].powi(3) - x[4].powi(2)),
             ])
         };
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let jacobian = forward_jacobian_ndarray_f64(&p, &f);
+
+        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
+        let jacobian = forward_jacobian_ndarray_f64(&x, &f);
+
         let res = vec![
             vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
             vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
@@ -323,11 +324,12 @@ mod tests {
             vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
         ];
-        // println!("{:?}", jacobian);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        println!("{:?}", jacobian);
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC);
+            }
+        }
     }
 
     #[test]
