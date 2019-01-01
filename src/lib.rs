@@ -179,7 +179,7 @@
 //! ### Full Hessian
 //!
 //! ```rust
-//! use finitediff::{FiniteDiff, PerturbationVector};
+//! use finitediff::FiniteDiff;
 //!
 //! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
 //!
@@ -202,9 +202,72 @@
 //!
 //! ### Product of Hessian `H(x)` with a vector `p`
 //!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0];
+//! let p = vec![2.0, 3.0, 4.0, 5.0];
+//!
+//! let hessian = x.forward_hessian_vec_prod(&|d| d.forward_diff(&f), &p);
+//!
+//! let res = vec![0.0, 6.0, 10.0, 18.0];
+//!
+//! (0..4)
+//!     .map(|i| assert!((res[i] - hessian[i]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
 //! ### Calculation of the Hessian without knowledge of the gradient
 //!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0];
+//!
+//! let hessian = x.forward_hessian_nograd(&f);
+//!
+//! let res = vec![
+//!     vec![0.0, 0.0, 0.0, 0.0],
+//!     vec![0.0, 2.0, 0.0, 0.0],
+//!     vec![0.0, 0.0, 0.0, 2.0],
+//!     vec![0.0, 0.0, 2.0, 2.0],
+//! ];
+//!
+//! (0..4)
+//!     .zip(0..4)
+//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
 //! ### Calculation of the sparse Hessian without knowledge of the gradient
+//!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0];
+//!
+//! let indices = vec![(1, 1), (2, 3), (3, 3)];
+//!
+//! let hessian = x.forward_hessian_nograd_sparse(&f, indices);
+//!
+//! let res = vec![
+//!     vec![0.0, 0.0, 0.0, 0.0],
+//!     vec![0.0, 2.0, 0.0, 0.0],
+//!     vec![0.0, 0.0, 0.0, 2.0],
+//!     vec![0.0, 0.0, 2.0, 2.0],
+//! ];
+//!
+//! (0..4)
+//!     .zip(0..4)
+//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
+//!     .count();
+//! ```
 
 #![allow(clippy::ptr_arg)]
 
