@@ -27,8 +27,6 @@ fn cost_ndarray_f64(x: &ndarray::Array1<f64>) -> f64 {
 mod tests {
     use super::*;
     use finitediff::*;
-    #[cfg(feature = "ndarray")]
-    use ndarray::array;
     use test::{black_box, Bencher};
 
     #[bench]
