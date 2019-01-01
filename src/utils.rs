@@ -6,7 +6,7 @@
 // copied, modified, or distributed except according to those terms.
 
 #[inline(always)]
-pub fn mod_and_calc_vec_f64(x: &mut Vec<f64>, f: &Fn(&Vec<f64>) -> f64, idx: usize, y: f64) -> f64 {
+pub fn mod_and_calc_vec_f64<T>(x: &mut Vec<f64>, f: &Fn(&Vec<f64>) -> T, idx: usize, y: f64) -> T {
     let xtmp = x[idx];
     x[idx] = xtmp + y;
     let fx1 = (f)(&x);
@@ -16,12 +16,12 @@ pub fn mod_and_calc_vec_f64(x: &mut Vec<f64>, f: &Fn(&Vec<f64>) -> f64, idx: usi
 
 #[cfg(feature = "ndarray")]
 #[inline(always)]
-pub fn mod_and_calc_ndarray_f64(
+pub fn mod_and_calc_ndarray_f64<T>(
     x: &mut ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    f: &Fn(&ndarray::Array1<f64>) -> T,
     idx: usize,
     y: f64,
-) -> f64 {
+) -> T {
     let xtmp = x[idx];
     x[idx] = xtmp + y;
     let fx1 = (f)(&x);
