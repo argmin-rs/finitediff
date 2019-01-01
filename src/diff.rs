@@ -5,31 +5,8 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+use crate::utils::*;
 use crate::EPS_F64;
-
-#[inline(always)]
-fn mod_and_calc_vec_f64(x: &mut Vec<f64>, f: &Fn(&Vec<f64>) -> f64, idx: usize, y: f64) -> f64 {
-    let xtmp = x[idx];
-    x[idx] = xtmp + y;
-    let fx1 = (f)(&x);
-    x[idx] = xtmp;
-    fx1
-}
-
-#[cfg(feature = "ndarray")]
-#[inline(always)]
-fn mod_and_calc_ndarray_f64(
-    x: &mut ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
-    idx: usize,
-    y: f64,
-) -> f64 {
-    let xtmp = x[idx];
-    x[idx] = xtmp + y;
-    let fx1 = (f)(&x);
-    x[idx] = xtmp;
-    fx1
-}
 
 pub fn forward_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
     let fx = (f)(&x);

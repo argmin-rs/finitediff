@@ -275,6 +275,7 @@ mod diff;
 mod hessian;
 mod jacobian;
 mod pert;
+mod utils;
 
 use crate::diff::*;
 use crate::hessian::*;
