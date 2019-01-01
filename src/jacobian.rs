@@ -108,11 +108,7 @@ pub fn forward_jacobian_vec_prod_ndarray_f64(
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let fx = (fs)(&x);
-    let x1 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi + EPS_F64.sqrt() * pi)
-        .collect();
+    let x1 = x + &p.mapv(|pi| EPS_F64.sqrt() * pi);
     let fx1 = (fs)(&x1);
     (fx1 - fx) / EPS_F64.sqrt()
 }
