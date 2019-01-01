@@ -64,8 +64,115 @@
 //!
 //! ## Calculation of the Jacobian
 //!
-// //! ```rust
-// //! ```
+//! ### Full Jacobian
+//!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! let f = |x: &Vec<f64>| {
+//!     vec![
+//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
+//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
+//!     ]
+//! };
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
+//!
+//! let jacobian = x.forward_jacobian(&f);
+//!
+//! let res = vec![
+//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+//! ];
+//!
+//! (0..6)
+//!     .zip(0..6)
+//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
+//! ### Product of the Jacobian `J(x)` with a vector `p`
+//!
+//! ```rust
+//! use finitediff::FiniteDiff;
+//!
+//! let f = |x: &Vec<f64>| {
+//!     vec![
+//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
+//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
+//!     ]
+//! };
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
+//! let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
+//!
+//! let jacobian = x.forward_jacobian_vec_prod(&f, &p);
+//!
+//! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+//!
+//! (0..6)
+//!     .map(|i| assert!((res[i] - jacobian[i]).abs() < 1e-4))
+//!     .count();
+//! ```
+//!
+//! ### Sparse Jacobian
+//!
+//! ```rust
+//! use finitediff::{FiniteDiff, PerturbationVector};
+//!
+//! let f = |x: &Vec<f64>| {
+//!     vec![
+//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
+//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
+//!     ]
+//! };
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
+//!
+//! let pert = vec![
+//!     PerturbationVector::new()
+//!         .add(0, vec![0, 1])
+//!         .add(3, vec![2, 3, 4]),
+//!     PerturbationVector::new()
+//!         .add(1, vec![0, 1, 2])
+//!         .add(4, vec![3, 4, 5]),
+//!     PerturbationVector::new()
+//!         .add(2, vec![1, 2, 3])
+//!         .add(5, vec![4, 5]),
+//! ];
+//!
+//! let jacobian = x.forward_jacobian_pert(&f, pert);
+//!
+//! let res = vec![
+//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+//! ];
+//!
+//! (0..6)
+//!     .zip(0..6)
+//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6))
+//!     .count();
+//! ```
 //!
 //! ## Calculation of the Hessian
 //!
@@ -82,7 +189,7 @@ mod pert;
 use crate::diff::*;
 use crate::hessian::*;
 use crate::jacobian::*;
-use crate::pert::*;
+pub use crate::pert::*;
 #[cfg(feature = "ndarray")]
 use ndarray;
 
