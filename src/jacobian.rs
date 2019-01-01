@@ -69,7 +69,7 @@ pub fn central_jacobian_ndarray_f64(
     let fx = (fs)(&x);
     let rn = fx.len();
     let n = x.len();
-    let mut out = ndarray::Array2::zeros((rn, n));
+    let mut out = ndarray::Array2::zeros((n, rn));
     for i in 0..n {
         let mut x1 = x.clone();
         let mut x2 = x.clone();
@@ -78,7 +78,7 @@ pub fn central_jacobian_ndarray_f64(
         let fx1 = (fs)(&x1);
         let fx2 = (fs)(&x2);
         for j in 0..rn {
-            out[(j, i)] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
+            out[(i, j)] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
         }
     }
     out
@@ -293,10 +293,11 @@ mod tests {
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
         ];
         // println!("{:?}", jacobian);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -324,7 +325,7 @@ mod tests {
             vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
         ];
-        println!("{:?}", jacobian);
+        // println!("{:?}", jacobian);
         for i in 0..6 {
             for j in 0..6 {
                 assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC);
@@ -355,10 +356,11 @@ mod tests {
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
         ];
         // println!("{:?}", jacobian);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC);
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -385,10 +387,11 @@ mod tests {
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
         ];
         // println!("{:?}", jacobian);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC);
+            }
+        }
     }
 
     #[test]
@@ -409,9 +412,9 @@ mod tests {
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
-        (0..6)
-            .map(|i| assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC))
-            .count();
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -433,9 +436,9 @@ mod tests {
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
-        (0..6)
-            .map(|i| assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC))
-            .count();
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+        }
     }
 
     #[test]
@@ -456,9 +459,9 @@ mod tests {
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
-        (0..6)
-            .map(|i| assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC))
-            .count();
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -480,9 +483,9 @@ mod tests {
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
-        (0..6)
-            .map(|i| assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC))
-            .count();
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+        }
     }
 
     #[test]
@@ -520,10 +523,11 @@ mod tests {
         ];
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -562,10 +566,11 @@ mod tests {
         ];
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[test]
@@ -603,10 +608,11 @@ mod tests {
         ];
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -645,9 +651,10 @@ mod tests {
         ];
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
-        (0..6)
-            .zip(0..6)
-            .map(|(i, j)| assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
 }
