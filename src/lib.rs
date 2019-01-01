@@ -176,8 +176,35 @@
 //!
 //! ## Calculation of the Hessian
 //!
-// //! ```rust
-// //! ```
+//! ### Full Hessian
+//!
+//! ```rust
+//! use finitediff::{FiniteDiff, PerturbationVector};
+//!
+//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//!
+//! let x = vec![1.0f64, 1.0, 1.0, 1.0];
+//!
+//! let hessian = x.forward_hessian(&|d| d.forward_diff(&f));
+//!
+//! let res = vec![
+//!     vec![0.0, 0.0, 0.0, 0.0],
+//!     vec![0.0, 2.0, 0.0, 0.0],
+//!     vec![0.0, 0.0, 0.0, 2.0],
+//!     vec![0.0, 0.0, 2.0, 2.0],
+//! ];
+//!
+//! (0..4)
+//!     .zip(0..4)
+//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
+//!     .count();
+//! ```
+//!
+//! ### Product of Hessian `H(x)` with a vector `p`
+//!
+//! ### Calculation of the Hessian without knowledge of the gradient
+//!
+//! ### Calculation of the sparse Hessian without knowledge of the gradient
 
 #![allow(clippy::ptr_arg)]
 
