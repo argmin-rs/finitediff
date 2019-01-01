@@ -7,16 +7,36 @@
 
 use crate::EPS_F64;
 
-pub fn forward_diff_vec_f64(p: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
-    let fx = (f)(&p);
-    let mut xt = p.clone();
-    let n = p.len();
-    (0..n)
+#[inline(always)]
+fn mod_and_calc_vec_f64(x: &mut Vec<f64>, f: &Fn(&Vec<f64>) -> f64, idx: usize, y: f64) -> f64 {
+    let xtmp = x[idx];
+    x[idx] = xtmp + y;
+    let fx1 = (f)(&x);
+    x[idx] = xtmp;
+    fx1
+}
+
+#[cfg(feature = "ndarray")]
+#[inline(always)]
+fn mod_and_calc_ndarray_f64(
+    x: &mut ndarray::Array1<f64>,
+    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    idx: usize,
+    y: f64,
+) -> f64 {
+    let xtmp = x[idx];
+    x[idx] = xtmp + y;
+    let fx1 = (f)(&x);
+    x[idx] = xtmp;
+    fx1
+}
+
+pub fn forward_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
+    let fx = (f)(&x);
+    let mut xt = x.clone();
+    (0..x.len())
         .map(|i| {
-            let xtmp = xt[i];
-            xt[i] = xtmp + EPS_F64.sqrt();
-            let fx1 = (f)(&xt);
-            xt[i] = xtmp;
+            let fx1 = mod_and_calc_vec_f64(&mut xt, f, i, EPS_F64.sqrt());
             (fx1 - fx) / (EPS_F64.sqrt())
         })
         .collect()
@@ -28,12 +48,11 @@ pub fn forward_diff_ndarray_f64(
     f: &Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array1<f64> {
     let fx = (f)(&x);
+    let mut xt = x.clone();
     let n = x.len();
     (0..n)
         .map(|i| {
-            let mut x1 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            let fx1 = (f)(&x1);
+            let fx1 = mod_and_calc_ndarray_f64(&mut xt, f, i, EPS_F64.sqrt());
             (fx1 - fx) / (EPS_F64.sqrt())
         })
         .collect()
