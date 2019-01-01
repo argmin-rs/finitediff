@@ -50,7 +50,7 @@ mod tests {
     }
 
     #[bench]
-    fn fwd_diff_vec_f64(b: &mut Bencher) {
+    fn forward_diff_vec_f64(b: &mut Bencher) {
         let x = vec![1.0f64; MASSIVENESS];
         b.iter(|| {
             black_box(x.forward_diff(&cost_vec_f64));
@@ -59,10 +59,18 @@ mod tests {
 
     #[cfg(feature = "ndarray")]
     #[bench]
-    fn fwd_diff_ndarray_f64(b: &mut Bencher) {
+    fn forward_diff_ndarray_f64(b: &mut Bencher) {
         let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_diff(&cost_ndarray_f64));
+        });
+    }
+
+    #[bench]
+    fn central_diff_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(x.central_diff(&cost_vec_f64));
         });
     }
 }

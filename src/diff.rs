@@ -49,8 +49,7 @@ pub fn forward_diff_ndarray_f64(
 ) -> ndarray::Array1<f64> {
     let fx = (f)(&x);
     let mut xt = x.clone();
-    let n = x.len();
-    (0..n)
+    (0..x.len())
         .map(|i| {
             let fx1 = mod_and_calc_ndarray_f64(&mut xt, f, i, EPS_F64.sqrt());
             (fx1 - fx) / (EPS_F64.sqrt())
@@ -59,15 +58,11 @@ pub fn forward_diff_ndarray_f64(
 }
 
 pub fn central_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
-    let n = x.len();
-    (0..n)
+    let mut xt = x.clone();
+    (0..x.len())
         .map(|i| {
-            let mut x1 = x.clone();
-            let mut x2 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            x2[i] -= EPS_F64.sqrt();
-            let fx1 = (f)(&x1);
-            let fx2 = (f)(&x2);
+            let fx1 = mod_and_calc_vec_f64(&mut xt, f, i, EPS_F64.sqrt());
+            let fx2 = mod_and_calc_vec_f64(&mut xt, f, i, -EPS_F64.sqrt());
             (fx1 - fx2) / (2.0 * EPS_F64.sqrt())
         })
         .collect()
