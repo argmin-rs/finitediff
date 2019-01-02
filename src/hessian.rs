@@ -7,10 +7,34 @@
 
 use crate::EPS_F64;
 
+fn restore_symmetry_vec_f64(mut mat: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    for i in 0..mat.len() {
+        for j in (i + 1)..mat[i].len() {
+            let t = (mat[i][j] + mat[j][i]) / 2.0;
+            mat[i][j] = t;
+            mat[j][i] = t;
+        }
+    }
+    mat
+}
+
+#[cfg(feature = "ndarray")]
+fn restore_symmetry_ndarray_f64(mut mat: ndarray::Array2<f64>) -> ndarray::Array2<f64> {
+    let (nx, ny) = mat.dim();
+    for i in 0..nx {
+        for j in (i + 1)..ny {
+            let t = (mat[(i, j)] + mat[(j, i)]) / 2.0;
+            mat[(i, j)] = t;
+            mat[(j, i)] = t;
+        }
+    }
+    mat
+}
+
 pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
     let fx = (grad)(x);
     let n = x.len();
-    let mut out: Vec<Vec<f64>> = (0..n)
+    let out: Vec<Vec<f64>> = (0..n)
         .map(|i| {
             let mut x1 = x.clone();
             x1[i] += EPS_F64.sqrt();
@@ -23,14 +47,7 @@ pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -
         .collect();
 
     // restore symmetry
-    for i in 0..n {
-        for j in (i + 1)..n {
-            let t = (out[i][j] + out[j][i]) / 2.0;
-            out[i][j] = t;
-            out[j][i] = t;
-        }
-    }
-    out
+    restore_symmetry_vec_f64(out)
 }
 
 #[cfg(feature = "ndarray")]
@@ -51,14 +68,7 @@ pub fn forward_hessian_ndarray_f64(
         }
     }
     // restore symmetry
-    for i in 0..n {
-        for j in (i + 1)..n {
-            let t = (out[(i, j)] + out[(j, i)]) / 2.0;
-            out[(i, j)] = t;
-            out[(j, i)] = t;
-        }
-    }
-    out
+    restore_symmetry_ndarray_f64(out)
 }
 
 pub fn central_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
@@ -79,14 +89,7 @@ pub fn central_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -
         .collect();
 
     // restore symmetry
-    for i in 0..n {
-        for j in (i + 1)..n {
-            let t = (out[i][j] + out[j][i]) / 2.0;
-            out[i][j] = t;
-            out[j][i] = t;
-        }
-    }
-    out
+    restore_symmetry_vec_f64(out)
 }
 
 #[cfg(feature = "ndarray")]
@@ -111,14 +114,7 @@ pub fn central_hessian_ndarray_f64(
         }
     }
     // restore symmetry
-    for i in 0..n {
-        for j in (i + 1)..n {
-            let t = (out[(i, j)] + out[(j, i)]) / 2.0;
-            out[(i, j)] = t;
-            out[(j, i)] = t;
-        }
-    }
-    out
+    restore_symmetry_ndarray_f64(out)
 }
 
 pub fn forward_hessian_vec_prod_vec_f64(
