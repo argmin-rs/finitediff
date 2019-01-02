@@ -290,4 +290,11 @@ mod tests {
         });
     }
 
+    #[bench]
+    fn forward_hessian_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(x.forward_hessian(&cost_multi_vec_f64));
+        });
+    }
 }
