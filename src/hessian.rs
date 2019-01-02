@@ -118,7 +118,7 @@ pub fn forward_hessian_vec_prod_ndarray_f64(
     let fx = (grad)(&x);
     let x1 = x + &(p.mapv(|pi| pi * EPS_F64.sqrt()));
     let fx1 = (grad)(&x1);
-    (fx1 - fx).mapv(|f| f / EPS_F64.sqrt())
+    (fx1 - fx) / EPS_F64.sqrt()
 }
 
 pub fn central_hessian_vec_prod_vec_f64(
@@ -153,24 +153,11 @@ pub fn central_hessian_vec_prod_ndarray_f64(
     grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
-    let rn = x.len();
-    let mut out = ndarray::Array1::zeros(rn);
-    let x1 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi + pi * EPS_F64.sqrt())
-        .collect();
-    let x2 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi - pi * EPS_F64.sqrt())
-        .collect();
+    let x1 = x + &(p.mapv(|pi| pi * EPS_F64.sqrt()));
+    let x2 = x - &(p.mapv(|pi| pi * EPS_F64.sqrt()));
     let fx1 = (grad)(&x1);
     let fx2 = (grad)(&x2);
-    for j in 0..rn {
-        out[j] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
-    }
-    out
+    (fx1 - fx2) / (2.0 * EPS_F64.sqrt())
 }
 
 pub fn forward_hessian_nograd_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<Vec<f64>> {

@@ -342,4 +342,23 @@ mod tests {
             black_box(x.forward_hessian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
     }
+
+    #[bench]
+    fn central_hessian_vec_prod_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        let p = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            black_box(x.central_hessian_vec_prod(&cost_multi_vec_f64, &p));
+        });
+    }
+
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn central_hessian_vec_prod_ndarray_f64(b: &mut Bencher) {
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let p = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        b.iter(|| {
+            black_box(x.central_hessian_vec_prod(&cost_multi_ndarray_f64, &p));
+        });
+    }
 }
