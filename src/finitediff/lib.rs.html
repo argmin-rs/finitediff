@@ -1257,6 +1257,32 @@
 <span id="1257">1257</span>
 <span id="1258">1258</span>
 <span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
+<span id="1273">1273</span>
+<span id="1274">1274</span>
+<span id="1275">1275</span>
+<span id="1276">1276</span>
+<span id="1277">1277</span>
+<span id="1278">1278</span>
+<span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2018 argmin developers</span>
 <span class="comment">//</span>
@@ -1294,9 +1320,9 @@
 <span class="doccomment">//! let res = vec![1.0f64, 2.0];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! (0..2)</span>
-<span class="doccomment">//!     .map(|i| assert!((res[i] - grad[i]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! for i in 0..2 {</span>
+<span class="doccomment">//!     assert!((res[i] - grad[i]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Using central differences</span>
@@ -1317,9 +1343,9 @@
 <span class="doccomment">//! let res = vec![1.0f64, 2.0];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! (0..2)</span>
-<span class="doccomment">//!     .map(|i| assert!((res[i] - grad[i]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! for i in 0..2 {</span>
+<span class="doccomment">//!     assert!((res[i] - grad[i]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Calculation of the Jacobian</span>
@@ -1353,10 +1379,12 @@
 <span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
 <span class="doccomment">//! ];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..6)</span>
-<span class="doccomment">//!     .zip(0..6)</span>
-<span class="doccomment">//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..6 {</span>
+<span class="doccomment">//!     for j in 0..6 {</span>
+<span class="doccomment">//!         assert!((res[i][j] - jacobian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Product of the Jacobian `J(x)` with a vector `p`</span>
@@ -1382,9 +1410,10 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..6)</span>
-<span class="doccomment">//!     .map(|i| assert!((res[i] - jacobian[i]).abs() &lt; 1e-4))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..6 {</span>
+<span class="doccomment">//!     assert!((res[i] - jacobian[i]).abs() &lt; 11.0*1e-6)</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Sparse Jacobian</span>
@@ -1428,10 +1457,12 @@
 <span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
 <span class="doccomment">//! ];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..6)</span>
-<span class="doccomment">//!     .zip(0..6)</span>
-<span class="doccomment">//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..6 {</span>
+<span class="doccomment">//!     for j in 0..6 {</span>
+<span class="doccomment">//!         assert!((res[i][j] - jacobian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Calculation of the Hessian</span>
@@ -1454,10 +1485,12 @@
 <span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
 <span class="doccomment">//! ];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..4)</span>
-<span class="doccomment">//!     .zip(0..4)</span>
-<span class="doccomment">//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..4 {</span>
+<span class="doccomment">//!     for j in 0..4 {</span>
+<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Product of Hessian `H(x)` with a vector `p`</span>
@@ -1474,9 +1507,9 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let res = vec![0.0, 6.0, 10.0, 18.0];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..4)</span>
-<span class="doccomment">//!     .map(|i| assert!((res[i] - hessian[i]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! for i in 0..4 {</span>
+<span class="doccomment">//!     assert!((res[i] - hessian[i]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Calculation of the Hessian without knowledge of the gradient</span>
@@ -1497,10 +1530,12 @@
 <span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
 <span class="doccomment">//! ];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..4)</span>
-<span class="doccomment">//!     .zip(0..4)</span>
-<span class="doccomment">//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..4 {</span>
+<span class="doccomment">//!     for j in 0..4 {</span>
+<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Calculation of the sparse Hessian without knowledge of the gradient</span>
@@ -1523,10 +1558,12 @@
 <span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
 <span class="doccomment">//! ];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! (0..4)</span>
-<span class="doccomment">//!     .zip(0..4)</span>
-<span class="doccomment">//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6))</span>
-<span class="doccomment">//!     .count();</span>
+<span class="doccomment">//! // Check result</span>
+<span class="doccomment">//! for i in 0..4 {</span>
+<span class="doccomment">//!     for j in 0..4 {</span>
+<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">ptr_arg</span>)]</span>
@@ -1535,6 +1572,7 @@
 <span class="kw">mod</span> <span class="ident">hessian</span>;
 <span class="kw">mod</span> <span class="ident">jacobian</span>;
 <span class="kw">mod</span> <span class="ident">pert</span>;
+<span class="kw">mod</span> <span class="ident">utils</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">diff</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">hessian</span>::<span class="kw-2">*</span>;
@@ -1849,17 +1887,17 @@
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">forward_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
 
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>];
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">forward_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -1871,17 +1909,17 @@
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">forward_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
 
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">forward_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1891,17 +1929,17 @@
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">central_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
 
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>];
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">central_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -1913,17 +1951,17 @@
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">central_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
 
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">central_diff</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 
-        (<span class="number">0</span>..<span class="number">2</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1949,10 +1987,11 @@
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">9.0</span>],
         ];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -1979,10 +2018,11 @@
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">9.0</span>],
         ];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_central_jacobian_vec_f64_trait</span>() {
@@ -2007,10 +2047,11 @@
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">9.0</span>],
         ];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2037,10 +2078,11 @@
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">9.0</span>],
         ];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_forward_jacobian_vec_prod_vec_f64_trait</span>() {
@@ -2060,9 +2102,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">8.0</span>, <span class="number">22.0</span>, <span class="number">27.0</span>, <span class="number">32.0</span>, <span class="number">37.0</span>, <span class="number">24.0</span>];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
         <span class="comment">// the accuracy for this is pretty bad!!</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">100.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">11.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2084,9 +2126,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">8.0</span>, <span class="number">22.0</span>, <span class="number">27.0</span>, <span class="number">32.0</span>, <span class="number">37.0</span>, <span class="number">24.0</span>];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
         <span class="comment">// the accuracy for this is pretty bad!!</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">100.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">11.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2106,10 +2148,9 @@
         <span class="kw">let</span> <span class="ident">jacobian</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">central_jacobian_vec_prod</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">8.0</span>, <span class="number">22.0</span>, <span class="number">27.0</span>, <span class="number">32.0</span>, <span class="number">37.0</span>, <span class="number">24.0</span>];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        <span class="comment">// the accuracy for this is pretty bad!!</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">100.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2130,10 +2171,9 @@
         <span class="kw">let</span> <span class="ident">jacobian</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">central_jacobian_vec_prod</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">8.0</span>, <span class="number">22.0</span>, <span class="number">27.0</span>, <span class="number">32.0</span>, <span class="number">37.0</span>, <span class="number">24.0</span>];
         <span class="comment">// println!(&quot;{:?}&quot;, jacobian);</span>
-        <span class="comment">// the accuracy for this is pretty bad!!</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="number">100.0</span> <span class="op">*</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_forward_jacobian_pert_vec_f64_trait</span>() {
@@ -2170,10 +2210,11 @@
         ];
         <span class="comment">// println!(&quot;jacobian:\n{:?}&quot;, jacobian);</span>
         <span class="comment">// println!(&quot;res:\n{:?}&quot;, res);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2212,10 +2253,11 @@
         ];
         <span class="comment">// println!(&quot;jacobian:\n{:?}&quot;, jacobian);</span>
         <span class="comment">// println!(&quot;res:\n{:?}&quot;, res);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2253,10 +2295,11 @@
         ];
         <span class="comment">// println!(&quot;jacobian:\n{:?}&quot;, jacobian);</span>
         <span class="comment">// println!(&quot;res:\n{:?}&quot;, res);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2295,10 +2338,11 @@
         ];
         <span class="comment">// println!(&quot;jacobian:\n{:?}&quot;, jacobian);</span>
         <span class="comment">// println!(&quot;res:\n{:?}&quot;, res);</span>
-        (<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">6</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">6</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">jacobian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2314,10 +2358,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2334,10 +2379,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2353,10 +2399,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2373,10 +2420,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2388,9 +2436,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">10.0</span>, <span class="number">18.0</span>];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2403,9 +2451,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">10.0</span>, <span class="number">18.0</span>];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2417,9 +2465,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">10.0</span>, <span class="number">18.0</span>];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2432,9 +2480,9 @@
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">10.0</span>, <span class="number">18.0</span>];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2450,10 +2498,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2470,10 +2519,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -2490,10 +2540,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
@@ -2511,10 +2562,11 @@
         ];
         <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
         <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
-        (<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">zip</span>(<span class="number">0</span>..<span class="number">4</span>)
-            .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
-            .<span class="ident">count</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+            <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
+                <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[(<span class="ident">i</span>, <span class="ident">j</span>)]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
+            }
+        }
     }
 }
 </pre></div>
