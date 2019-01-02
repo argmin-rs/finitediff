@@ -116,18 +116,9 @@ pub fn forward_hessian_vec_prod_ndarray_f64(
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let fx = (grad)(&x);
-    let rn = fx.len();
-    let mut out = ndarray::Array1::zeros(rn);
-    let x1 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi + pi * EPS_F64.sqrt())
-        .collect();
+    let x1 = x + &(p.mapv(|pi| pi * EPS_F64.sqrt()));
     let fx1 = (grad)(&x1);
-    for j in 0..rn {
-        out[j] = (fx1[j] - fx[j]) / EPS_F64.sqrt();
-    }
-    out
+    (fx1 - fx).mapv(|f| f / EPS_F64.sqrt())
 }
 
 pub fn central_hessian_vec_prod_vec_f64(
