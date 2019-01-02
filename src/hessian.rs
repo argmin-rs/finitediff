@@ -352,10 +352,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -372,10 +373,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[test]
@@ -391,10 +393,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -411,10 +414,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
     #[test]
     fn test_forward_hessian_vec_prod_vec_f64() {
@@ -425,9 +429,9 @@ mod tests {
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -441,9 +445,9 @@ mod tests {
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
     }
 
     #[test]
@@ -455,9 +459,9 @@ mod tests {
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -471,9 +475,9 @@ mod tests {
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .map(|i| assert!((res[i] - hessian[i]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
     }
 
     #[test]
@@ -489,10 +493,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -509,10 +514,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[test]
@@ -529,10 +535,11 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
+            }
+        }
     }
 
     #[cfg(feature = "ndarray")]
@@ -550,9 +557,10 @@ mod tests {
         ];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
-        (0..4)
-            .zip(0..4)
-            .map(|(i, j)| assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC))
-            .count();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
     }
 }
