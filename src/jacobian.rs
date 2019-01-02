@@ -142,16 +142,8 @@ pub fn central_jacobian_vec_prod_ndarray_f64(
     fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
-    let x1 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi + EPS_F64.sqrt() * pi)
-        .collect();
-    let x2 = x
-        .iter()
-        .zip(p.iter())
-        .map(|(xi, pi)| xi - EPS_F64.sqrt() * pi)
-        .collect();
+    let x1 = x + &p.mapv(|pi| EPS_F64.sqrt() * pi);
+    let x2 = x + &p.mapv(|pi| -EPS_F64.sqrt() * pi);
     let fx1 = (fs)(&x1);
     let fx2 = (fs)(&x2);
     (fx1 - fx2) / (2.0 * EPS_F64.sqrt())
