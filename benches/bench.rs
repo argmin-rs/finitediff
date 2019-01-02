@@ -199,4 +199,95 @@ mod tests {
             black_box(x.forward_jacobian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
     }
+
+    #[bench]
+    fn forward_jacobian_pert_vec_f64(b: &mut Bencher) {
+        let pert = vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ];
+
+        let x = vec![1.0f64; MASSIVENESS];
+
+        b.iter(|| {
+            let p2 = pert.clone();
+            black_box(x.forward_jacobian_pert(&cost_multi_vec_f64, p2));
+        });
+    }
+
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn forward_jacobian_pert_ndarray_f64(b: &mut Bencher) {
+        let pert = vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ];
+
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+
+        b.iter(|| {
+            let p2 = pert.clone();
+            black_box(x.forward_jacobian_pert(&cost_multi_ndarray_f64, p2));
+        });
+    }
+
+    #[bench]
+    fn central_jacobian_pert_vec_f64(b: &mut Bencher) {
+        let pert = vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ];
+
+        let x = vec![1.0f64; MASSIVENESS];
+
+        b.iter(|| {
+            let p2 = pert.clone();
+            black_box(x.central_jacobian_pert(&cost_multi_vec_f64, p2));
+        });
+    }
+
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn central_jacobian_pert_ndarray_f64(b: &mut Bencher) {
+        let pert = vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ];
+
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+
+        b.iter(|| {
+            let p2 = pert.clone();
+            black_box(x.central_jacobian_pert(&cost_multi_ndarray_f64, p2));
+        });
+    }
+
 }
