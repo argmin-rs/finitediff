@@ -34,9 +34,9 @@
 //! let res = vec![1.0f64, 2.0];
 //!
 //! // Check result
-//! (0..2)
-//!     .map(|i| assert!((res[i] - grad[i]).abs() < 1e-6))
-//!     .count();
+//! for i in 0..2 {
+//!     assert!((res[i] - grad[i]).abs() < 1e-6)
+//! }
 //! ```
 //!
 //! ### Using central differences
@@ -57,9 +57,9 @@
 //! let res = vec![1.0f64, 2.0];
 //!
 //! // Check result
-//! (0..2)
-//!     .map(|i| assert!((res[i] - grad[i]).abs() < 1e-6))
-//!     .count();
+//! for i in 0..2 {
+//!     assert!((res[i] - grad[i]).abs() < 1e-6)
+//! }
 //! ```
 //!
 //! ## Calculation of the Jacobian
@@ -93,10 +93,12 @@
 //!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
 //! ];
 //!
-//! (0..6)
-//!     .zip(0..6)
-//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6))
-//!     .count();
+//! // Check result
+//! for i in 0..6 {
+//!     for j in 0..6 {
+//!         assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6)
+//!     }
+//! }
 //! ```
 //!
 //! ### Product of the Jacobian `J(x)` with a vector `p`
@@ -122,9 +124,10 @@
 //!
 //! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
 //!
-//! (0..6)
-//!     .map(|i| assert!((res[i] - jacobian[i]).abs() < 1e-4))
-//!     .count();
+//! // Check result
+//! for i in 0..6 {
+//!     assert!((res[i] - jacobian[i]).abs() < 11.0*1e-6)
+//! }
 //! ```
 //!
 //! ### Sparse Jacobian
@@ -168,10 +171,12 @@
 //!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
 //! ];
 //!
-//! (0..6)
-//!     .zip(0..6)
-//!     .map(|(i, j)| assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6))
-//!     .count();
+//! // Check result
+//! for i in 0..6 {
+//!     for j in 0..6 {
+//!         assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6)
+//!     }
+//! }
 //! ```
 //!
 //! ## Calculation of the Hessian
@@ -194,10 +199,12 @@
 //!     vec![0.0, 0.0, 2.0, 2.0],
 //! ];
 //!
-//! (0..4)
-//!     .zip(0..4)
-//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
-//!     .count();
+//! // Check result
+//! for i in 0..4 {
+//!     for j in 0..4 {
+//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//!     }
+//! }
 //! ```
 //!
 //! ### Product of Hessian `H(x)` with a vector `p`
@@ -214,9 +221,9 @@
 //!
 //! let res = vec![0.0, 6.0, 10.0, 18.0];
 //!
-//! (0..4)
-//!     .map(|i| assert!((res[i] - hessian[i]).abs() < 1e-6))
-//!     .count();
+//! for i in 0..4 {
+//!     assert!((res[i] - hessian[i]).abs() < 1e-6)
+//! }
 //! ```
 //!
 //! ### Calculation of the Hessian without knowledge of the gradient
@@ -237,10 +244,12 @@
 //!     vec![0.0, 0.0, 2.0, 2.0],
 //! ];
 //!
-//! (0..4)
-//!     .zip(0..4)
-//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
-//!     .count();
+//! // Check result
+//! for i in 0..4 {
+//!     for j in 0..4 {
+//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//!     }
+//! }
 //! ```
 //!
 //! ### Calculation of the sparse Hessian without knowledge of the gradient
@@ -263,10 +272,12 @@
 //!     vec![0.0, 0.0, 2.0, 2.0],
 //! ];
 //!
-//! (0..4)
-//!     .zip(0..4)
-//!     .map(|(i, j)| assert!((res[i][j] - hessian[i][j]).abs() < 1e-6))
-//!     .count();
+//! // Check result
+//! for i in 0..4 {
+//!     for j in 0..4 {
+//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//!     }
+//! }
 //! ```
 
 #![allow(clippy::ptr_arg)]
