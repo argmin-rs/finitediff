@@ -5,7 +5,9 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use crate::utils::{restore_symmetry_ndarray_f64, restore_symmetry_vec_f64};
+#[cfg(feature = "ndarray")]
+use crate::utils::restore_symmetry_ndarray_f64;
+use crate::utils::restore_symmetry_vec_f64;
 use crate::EPS_F64;
 
 pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
