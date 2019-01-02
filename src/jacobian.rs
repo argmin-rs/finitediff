@@ -432,7 +432,7 @@ mod tests {
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < 11.0 * COMP_ACC)
         }
     }
 
@@ -456,7 +456,7 @@ mod tests {
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < 11.0 * COMP_ACC)
         }
     }
 
@@ -477,9 +477,8 @@ mod tests {
         let jacobian = central_jacobian_vec_prod_vec_f64(&x, &f, &p);
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
-        // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
         }
     }
 
@@ -501,9 +500,8 @@ mod tests {
         let jacobian = central_jacobian_vec_prod_ndarray_f64(&x, &f, &p);
         let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
         // println!("{:?}", jacobian);
-        // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 100.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
         }
     }
 
