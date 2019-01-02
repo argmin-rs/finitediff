@@ -5,19 +5,15 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-#[cfg(feature = "ndarray")]
-use crate::utils::restore_symmetry_ndarray_f64;
-use crate::utils::restore_symmetry_vec_f64;
+use crate::utils::*;
 use crate::EPS_F64;
 
 pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
     let fx = (grad)(x);
-    let n = x.len();
-    let out: Vec<Vec<f64>> = (0..n)
+    let mut xt = x.clone();
+    let out: Vec<Vec<f64>> = (0..x.len())
         .map(|i| {
-            let mut x1 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            let fx1 = (grad)(&x1);
+            let fx1 = mod_and_calc_vec_f64(&mut xt, grad, i, EPS_F64.sqrt());
             fx1.iter()
                 .zip(fx.iter())
                 .map(|(a, b)| (a - b) / (EPS_F64.sqrt()))
@@ -34,16 +30,19 @@ pub fn forward_hessian_ndarray_f64(
     x: &ndarray::Array1<f64>,
     grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
+    // use ndarray::s;
+    let mut xt = x.clone();
     let fx = (grad)(&x);
     let rn = fx.len();
     let n = x.len();
-    let mut out = ndarray::Array2::zeros((rn, n));
+    let mut out = unsafe { ndarray::Array2::uninitialized((n, rn)) };
     for i in 0..n {
-        let mut x1 = x.clone();
-        x1[i] += EPS_F64.sqrt();
-        let fx1 = (grad)(&x1);
+        let fx1 = mod_and_calc_ndarray_f64(&mut xt, grad, i, EPS_F64.sqrt());
+        // unfortunately, this is slower than iterating :/
+        // out.slice_mut(s![i, ..])
+        //     .assign(&((fx1 - &fx) / EPS_F64.sqrt()));
         for j in 0..rn {
-            out[(j, i)] = (fx1[j] - fx[j]) / EPS_F64.sqrt();
+            out[(i, j)] = (fx1[j] - fx[j]) / EPS_F64.sqrt();
         }
     }
     // restore symmetry

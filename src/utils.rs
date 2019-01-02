@@ -43,6 +43,9 @@ pub fn restore_symmetry_vec_f64(mut mat: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
 
 #[cfg(feature = "ndarray")]
 #[inline(always)]
+/// Restore symmetry for an array of type `ndarray::Array2<f64>`
+///
+/// Unfortunately, this is *really* slow!
 pub fn restore_symmetry_ndarray_f64(mut mat: ndarray::Array2<f64>) -> ndarray::Array2<f64> {
     let (nx, ny) = mat.dim();
     for i in 0..nx {
