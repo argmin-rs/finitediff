@@ -50,15 +50,11 @@ pub fn forward_hessian_ndarray_f64(
 }
 
 pub fn central_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
-    let n = x.len();
-    let out: Vec<Vec<f64>> = (0..n)
+    let mut xt = x.clone();
+    let out: Vec<Vec<f64>> = (0..x.len())
         .map(|i| {
-            let mut x1 = x.clone();
-            let mut x2 = x.clone();
-            x1[i] += EPS_F64.sqrt();
-            x2[i] -= EPS_F64.sqrt();
-            let fx1 = (grad)(&x1);
-            let fx2 = (grad)(&x2);
+            let fx1 = mod_and_calc_vec_f64(&mut xt, grad, i, EPS_F64.sqrt());
+            let fx2 = mod_and_calc_vec_f64(&mut xt, grad, i, -EPS_F64.sqrt());
             fx1.iter()
                 .zip(fx2.iter())
                 .map(|(a, b)| (a - b) / (2.0 * EPS_F64.sqrt()))
@@ -75,20 +71,17 @@ pub fn central_hessian_ndarray_f64(
     x: &ndarray::Array1<f64>,
     grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
+    let mut xt = x.clone();
     // TODO: get rid of this!
     let fx = (grad)(&x);
     let rn = fx.len();
     let n = x.len();
-    let mut out = ndarray::Array2::zeros((rn, n));
+    let mut out = ndarray::Array2::zeros((n, rn));
     for i in 0..n {
-        let mut x1 = x.clone();
-        let mut x2 = x.clone();
-        x1[i] += EPS_F64.sqrt();
-        x2[i] -= EPS_F64.sqrt();
-        let fx1 = (grad)(&x1);
-        let fx2 = (grad)(&x2);
+        let fx1 = mod_and_calc_ndarray_f64(&mut xt, grad, i, EPS_F64.sqrt());
+        let fx2 = mod_and_calc_ndarray_f64(&mut xt, grad, i, -EPS_F64.sqrt());
         for j in 0..rn {
-            out[(j, i)] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
+            out[(i, j)] = (fx1[j] - fx2[j]) / (2.0 * EPS_F64.sqrt());
         }
     }
     // restore symmetry
