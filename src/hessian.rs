@@ -196,24 +196,27 @@ pub fn forward_hessian_nograd_ndarray_f64(
     x: &ndarray::Array1<f64>,
     f: &Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array2<f64> {
-    // TODO: f(x + EPS * e_i) needs to be precomputed!!
     let fx = (f)(x);
     let n = x.len();
+    let mut xt = x.clone();
+
+    // Precompute f(x + sqrt(EPS) * e_i) for all i
+    let fxei: Vec<f64> = (0..n)
+        .map(|i| mod_and_calc_ndarray_f64(&mut xt, f, i, EPS_F64.sqrt()))
+        .collect();
+
     let mut out = ndarray::Array2::zeros((n, n));
     for i in 0..n {
         for j in 0..=i {
             let t = {
-                let mut xi = x.clone();
-                xi[i] += EPS_F64.sqrt();
-                let mut xj = x.clone();
-                xj[j] += EPS_F64.sqrt();
-                let mut xij = x.clone();
-                xij[i] += EPS_F64.sqrt();
-                xij[j] += EPS_F64.sqrt();
-                let fxi = (f)(&xi);
-                let fxj = (f)(&xj);
-                let fxij = (f)(&xij);
-                (fxij - fxi - fxj + fx) / EPS_F64
+                let xti = xt[i];
+                let xtj = xt[j];
+                xt[i] += EPS_F64.sqrt();
+                xt[j] += EPS_F64.sqrt();
+                let fxij = (f)(&xt);
+                xt[i] = xti;
+                xt[j] = xtj;
+                (fxij - fxei[i] - fxei[j] + fx) / EPS_F64
             };
             out[(i, j)] = t;
             out[(j, i)] = t;

@@ -370,12 +370,12 @@ mod tests {
         });
     }
 
-    // #[cfg(feature = "ndarray")]
-    // #[bench]
-    // fn forward_hessian_nograd_ndarray_f64(b: &mut Bencher) {
-    //     let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
-    //     b.iter(|| {
-    //         black_box(x.forward_hessian(&cost_multi_ndarray_f64));
-    //     });
-    // }
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn forward_hessian_nograd_ndarray_f64(b: &mut Bencher) {
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        b.iter(|| {
+            black_box(x.forward_hessian_nograd(&cost_ndarray_f64));
+        });
+    }
 }
