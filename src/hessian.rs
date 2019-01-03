@@ -161,24 +161,28 @@ pub fn central_hessian_vec_prod_ndarray_f64(
 }
 
 pub fn forward_hessian_nograd_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<Vec<f64>> {
-    // TODO: f(x + EPS * e_i) needs to be precomputed!!
     let fx = (f)(x);
     let n = x.len();
+    let mut xt = x.clone();
+
+    // Precompute f(x + sqrt(EPS) * e_i) for all i
+    let fxei: Vec<f64> = (0..n)
+        .map(|i| mod_and_calc_vec_f64(&mut xt, f, i, EPS_F64.sqrt()))
+        .collect();
+
     let mut out: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
+
     for i in 0..n {
         for j in 0..=i {
             let t = {
-                let mut xi = x.clone();
-                xi[i] += EPS_F64.sqrt();
-                let mut xj = x.clone();
-                xj[j] += EPS_F64.sqrt();
-                let mut xij = x.clone();
-                xij[i] += EPS_F64.sqrt();
-                xij[j] += EPS_F64.sqrt();
-                let fxi = (f)(&xi);
-                let fxj = (f)(&xj);
-                let fxij = (f)(&xij);
-                (fxij - fxi - fxj + fx) / EPS_F64
+                let xti = xt[i];
+                let xtj = xt[j];
+                xt[i] += EPS_F64.sqrt();
+                xt[j] += EPS_F64.sqrt();
+                let fxij = (f)(&xt);
+                xt[i] = xti;
+                xt[j] = xtj;
+                (fxij - fxei[i] - fxei[j] + fx) / EPS_F64
             };
             out[i][j] = t;
             out[j][i] = t;
@@ -436,8 +440,7 @@ mod tests {
             vec![0.0, 0.0, 0.0, 2.0],
             vec![0.0, 0.0, 2.0, 2.0],
         ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
+        println!("hessian:\n{:#?}", hessian);
         for i in 0..4 {
             for j in 0..4 {
                 assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
