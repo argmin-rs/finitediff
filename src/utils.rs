@@ -86,6 +86,6 @@ impl KV {
                 return None;
             }
         }
-        return None;
+        None
     }
 }
