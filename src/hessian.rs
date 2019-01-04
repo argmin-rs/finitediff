@@ -225,38 +225,6 @@ pub fn forward_hessian_nograd_ndarray_f64(
     out
 }
 
-struct KV {
-    k: Vec<usize>,
-    v: Vec<f64>,
-}
-
-impl KV {
-    pub fn new(capacity: usize) -> Self {
-        KV {
-            k: Vec::with_capacity(capacity),
-            v: Vec::with_capacity(capacity),
-        }
-    }
-
-    pub fn set(&mut self, k: usize, v: f64) -> &mut Self {
-        self.k.push(k);
-        self.v.push(v);
-        self
-    }
-
-    pub fn get(&self, k: usize) -> Option<f64> {
-        for (i, kk) in self.k.iter().enumerate() {
-            if *kk == k {
-                return Some(self.v[i]);
-            }
-            if *kk > k {
-                return None;
-            }
-        }
-        return None;
-    }
-}
-
 pub fn forward_hessian_nograd_sparse_vec_f64(
     x: &Vec<f64>,
     f: &Fn(&Vec<f64>) -> f64,
@@ -309,19 +277,39 @@ pub fn forward_hessian_nograd_sparse_ndarray_f64(
 ) -> ndarray::Array2<f64> {
     let fx = (f)(x);
     let n = x.len();
+    let mut xt = x.clone();
+
+    let mut idxs: Vec<usize> = indices
+        .iter()
+        .flat_map(|i| i.iter())
+        .cloned()
+        .collect::<Vec<usize>>();
+    idxs.sort();
+    idxs.dedup();
+
+    let mut fxei = KV::new(idxs.len());
+
+    for idx in idxs.iter() {
+        fxei.set(
+            *idx,
+            mod_and_calc_ndarray_f64(&mut xt, f, *idx, EPS_F64.sqrt()),
+        );
+    }
+
     let mut out = ndarray::Array2::zeros((n, n));
     for [i, j] in indices {
         let t = {
-            let mut xi = x.clone();
-            xi[i] += EPS_F64.sqrt();
-            let mut xj = x.clone();
-            xj[j] += EPS_F64.sqrt();
-            let mut xij = x.clone();
-            xij[i] += EPS_F64.sqrt();
-            xij[j] += EPS_F64.sqrt();
-            let fxi = (f)(&xi);
-            let fxj = (f)(&xj);
-            let fxij = (f)(&xij);
+            let xti = xt[i];
+            let xtj = xt[j];
+            xt[i] += EPS_F64.sqrt();
+            xt[j] += EPS_F64.sqrt();
+            let fxij = (f)(&xt);
+            xt[i] = xti;
+            xt[j] = xtj;
+
+            let fxi = fxei.get(i).unwrap();
+            let fxj = fxei.get(j).unwrap();
+
             (fxij - fxi - fxj + fx) / EPS_F64
         };
         out[(i, j)] = t;

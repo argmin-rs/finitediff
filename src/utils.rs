@@ -57,3 +57,35 @@ pub fn restore_symmetry_ndarray_f64(mut mat: ndarray::Array2<f64>) -> ndarray::A
     }
     mat
 }
+
+pub struct KV {
+    k: Vec<usize>,
+    v: Vec<f64>,
+}
+
+impl KV {
+    pub fn new(capacity: usize) -> Self {
+        KV {
+            k: Vec::with_capacity(capacity),
+            v: Vec::with_capacity(capacity),
+        }
+    }
+
+    pub fn set(&mut self, k: usize, v: f64) -> &mut Self {
+        self.k.push(k);
+        self.v.push(v);
+        self
+    }
+
+    pub fn get(&self, k: usize) -> Option<f64> {
+        for (i, kk) in self.k.iter().enumerate() {
+            if *kk == k {
+                return Some(self.v[i]);
+            }
+            if *kk > k {
+                return None;
+            }
+        }
+        return None;
+    }
+}
