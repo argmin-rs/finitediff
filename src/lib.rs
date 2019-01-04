@@ -261,7 +261,7 @@
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
-//! let indices = vec![(1, 1), (2, 3), (3, 3)];
+//! let indices = vec![[1, 1], [2, 3], [3, 3]];
 //!
 //! let hessian = x.forward_hessian_nograd_sparse(&f, indices);
 //!
@@ -427,7 +427,7 @@ where
     fn forward_hessian_nograd_sparse(
         &self,
         f: &Fn(&Self) -> f64,
-        indices: Vec<(usize, usize)>,
+        indices: Vec<[usize; 2]>,
     ) -> Self::Hessian;
 }
 
@@ -502,7 +502,7 @@ where
     fn forward_hessian_nograd_sparse(
         &self,
         f: &Fn(&Self) -> f64,
-        indices: Vec<(usize, usize)>,
+        indices: Vec<[usize; 2]>,
     ) -> Self::Hessian {
         forward_hessian_nograd_sparse_vec_f64(self, f, indices)
     }
@@ -580,7 +580,7 @@ where
     fn forward_hessian_nograd_sparse(
         &self,
         f: &Fn(&Self) -> f64,
-        indices: Vec<(usize, usize)>,
+        indices: Vec<[usize; 2]>,
     ) -> Self::Hessian {
         forward_hessian_nograd_sparse_ndarray_f64(self, f, indices)
     }
@@ -1244,7 +1244,7 @@ mod tests {
     fn test_forward_hessian_nograd_sparse_vec_f64_trait() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
+        let indices = vec![[1, 1], [2, 3], [3, 3]];
         let hessian = p.forward_hessian_nograd_sparse(&f, indices);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
@@ -1266,7 +1266,7 @@ mod tests {
     fn test_forward_hessian_nograd_sparse_ndarray_f64_trait() {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
+        let indices = vec![[1, 1], [2, 3], [3, 3]];
         let hessian = p.forward_hessian_nograd_sparse(&f, indices);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],

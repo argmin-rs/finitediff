@@ -228,12 +228,22 @@ pub fn forward_hessian_nograd_ndarray_f64(
 pub fn forward_hessian_nograd_sparse_vec_f64(
     x: &Vec<f64>,
     f: &Fn(&Vec<f64>) -> f64,
-    indices: Vec<(usize, usize)>,
+    indices: Vec<[usize; 2]>,
 ) -> Vec<Vec<f64>> {
     let fx = (f)(x);
     let n = x.len();
+    let mut xt = x.clone();
+    let mut idxs: Vec<usize> = indices
+        .iter()
+        .flat_map(|i| i.iter())
+        .cloned()
+        .collect::<Vec<usize>>();
+    idxs.sort();
+    idxs.dedup();
+    // println!("idxs: {:?}", idxs);
+
     let mut out: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
-    for (i, j) in indices {
+    for [i, j] in indices {
         let t = {
             let mut xi = x.clone();
             xi[i] += EPS_F64.sqrt();
@@ -257,12 +267,12 @@ pub fn forward_hessian_nograd_sparse_vec_f64(
 pub fn forward_hessian_nograd_sparse_ndarray_f64(
     x: &ndarray::Array1<f64>,
     f: &Fn(&ndarray::Array1<f64>) -> f64,
-    indices: Vec<(usize, usize)>,
+    indices: Vec<[usize; 2]>,
 ) -> ndarray::Array2<f64> {
     let fx = (f)(x);
     let n = x.len();
     let mut out = ndarray::Array2::zeros((n, n));
-    for (i, j) in indices {
+    for [i, j] in indices {
         let t = {
             let mut xi = x.clone();
             xi[i] += EPS_F64.sqrt();
@@ -476,7 +486,7 @@ mod tests {
     fn test_forward_hessian_nograd_sparse_vec_f64() {
         let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
+        let indices = vec![[1, 1], [2, 3], [3, 3]];
         let hessian = forward_hessian_nograd_sparse_vec_f64(&p, &f, indices);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
@@ -498,7 +508,7 @@ mod tests {
     fn test_forward_hessian_nograd_sparse_ndarray_f64() {
         let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let indices = vec![(1, 1), (2, 3), (3, 3)];
+        let indices = vec![[1, 1], [2, 3], [3, 3]];
         let hessian = forward_hessian_nograd_sparse_ndarray_f64(&p, &f, indices);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
