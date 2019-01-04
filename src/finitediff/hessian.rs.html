@@ -539,6 +539,18 @@
 <span id="539">539</span>
 <span id="540">540</span>
 <span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2018 argmin developers</span>
 <span class="comment">//</span>
@@ -547,19 +559,15 @@
 <span class="comment">// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be</span>
 <span class="comment">// copied, modified, or distributed except according to those terms.</span>
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ndarray&quot;</span>)]</span>
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">restore_symmetry_ndarray_f64</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">restore_symmetry_vec_f64</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">EPS_F64</span>;
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_vec_f64</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="ident">x</span>);
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>)
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">x1</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
+            <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
             <span class="ident">fx1</span>.<span class="ident">iter</span>()
                 .<span class="ident">zip</span>(<span class="ident">fx</span>.<span class="ident">iter</span>())
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
@@ -576,16 +584,19 @@
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="comment">// use ndarray::s;</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">rn</span> <span class="op">=</span> <span class="ident">fx</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">zeros</span>((<span class="ident">rn</span>, <span class="ident">n</span>));
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">uninitialized</span>((<span class="ident">n</span>, <span class="ident">rn</span>)) };
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-        <span class="ident">x1</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-        <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
+        <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
+        <span class="comment">// unfortunately, this is slower than iterating :/</span>
+        <span class="comment">// out.slice_mut(s![i, ..])</span>
+        <span class="comment">//     .assign(&amp;((fx1 - &amp;fx) / EPS_F64.sqrt()));</span>
         <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">rn</span> {
-            <span class="ident">out</span>[(<span class="ident">j</span>, <span class="ident">i</span>)] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx</span>[<span class="ident">j</span>]) <span class="op">/</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+            <span class="ident">out</span>[(<span class="ident">i</span>, <span class="ident">j</span>)] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx</span>[<span class="ident">j</span>]) <span class="op">/</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
         }
     }
     <span class="comment">// restore symmetry</span>
@@ -593,15 +604,11 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">central_hessian_vec_f64</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>)
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x2</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">x1</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="ident">x2</span>[<span class="ident">i</span>] <span class="op">-=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
-            <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x2</span>);
+            <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
+            <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="op">-</span><span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
             <span class="ident">fx1</span>.<span class="ident">iter</span>()
                 .<span class="ident">zip</span>(<span class="ident">fx2</span>.<span class="ident">iter</span>())
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
@@ -618,20 +625,17 @@
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
     <span class="comment">// TODO: get rid of this!</span>
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">rn</span> <span class="op">=</span> <span class="ident">fx</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">zeros</span>((<span class="ident">rn</span>, <span class="ident">n</span>));
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">zeros</span>((<span class="ident">n</span>, <span class="ident">rn</span>));
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">x2</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-        <span class="ident">x1</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-        <span class="ident">x2</span>[<span class="ident">i</span>] <span class="op">-=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-        <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
-        <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x2</span>);
+        <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
+        <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> <span class="ident">mod_and_calc_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="op">-</span><span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
         <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">rn</span> {
-            <span class="ident">out</span>[(<span class="ident">j</span>, <span class="ident">i</span>)] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx2</span>[<span class="ident">j</span>]) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
+            <span class="ident">out</span>[(<span class="ident">i</span>, <span class="ident">j</span>)] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx2</span>[<span class="ident">j</span>]) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
         }
     }
     <span class="comment">// restore symmetry</span>
@@ -666,18 +670,9 @@
     <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x</span>);
-    <span class="kw">let</span> <span class="ident">rn</span> <span class="op">=</span> <span class="ident">fx</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">zeros</span>(<span class="ident">rn</span>);
-    <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">zip</span>(<span class="ident">p</span>.<span class="ident">iter</span>())
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">xi</span>, <span class="ident">pi</span>)<span class="op">|</span> <span class="ident">xi</span> <span class="op">+</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>())
-        .<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">+</span> <span class="kw-2">&amp;</span>(<span class="ident">p</span>.<span class="ident">mapv</span>(<span class="op">|</span><span class="ident">pi</span><span class="op">|</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()));
     <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
-    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">rn</span> {
-        <span class="ident">out</span>[<span class="ident">j</span>] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx</span>[<span class="ident">j</span>]) <span class="op">/</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-    }
-    <span class="ident">out</span>
+    (<span class="ident">fx1</span> <span class="op">-</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">central_hessian_vec_prod_vec_f64</span>(
@@ -712,45 +707,36 @@
     <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rn</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">zeros</span>(<span class="ident">rn</span>);
-    <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">zip</span>(<span class="ident">p</span>.<span class="ident">iter</span>())
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">xi</span>, <span class="ident">pi</span>)<span class="op">|</span> <span class="ident">xi</span> <span class="op">+</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>())
-        .<span class="ident">collect</span>();
-    <span class="kw">let</span> <span class="ident">x2</span> <span class="op">=</span> <span class="ident">x</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">zip</span>(<span class="ident">p</span>.<span class="ident">iter</span>())
-        .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">xi</span>, <span class="ident">pi</span>)<span class="op">|</span> <span class="ident">xi</span> <span class="op">-</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>())
-        .<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">+</span> <span class="kw-2">&amp;</span>(<span class="ident">p</span>.<span class="ident">mapv</span>(<span class="op">|</span><span class="ident">pi</span><span class="op">|</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()));
+    <span class="kw">let</span> <span class="ident">x2</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">-</span> <span class="kw-2">&amp;</span>(<span class="ident">p</span>.<span class="ident">mapv</span>(<span class="op">|</span><span class="ident">pi</span><span class="op">|</span> <span class="ident">pi</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()));
     <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x1</span>);
     <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="kw-2">&amp;</span><span class="ident">x2</span>);
-    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">rn</span> {
-        <span class="ident">out</span>[<span class="ident">j</span>] <span class="op">=</span> (<span class="ident">fx1</span>[<span class="ident">j</span>] <span class="op">-</span> <span class="ident">fx2</span>[<span class="ident">j</span>]) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
-    }
-    <span class="ident">out</span>
+    (<span class="ident">fx1</span> <span class="op">-</span> <span class="ident">fx2</span>) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>())
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_vec_f64</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
-    <span class="comment">// TODO: f(x + EPS * e_i) needs to be precomputed!!</span>
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+
+    <span class="comment">// Precompute f(x + sqrt(EPS) * e_i) for all i</span>
+    <span class="kw">let</span> <span class="ident">fxei</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>)
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">f</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
+        .<span class="ident">collect</span>();
+
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
+
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
         <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..=<span class="ident">i</span> {
             <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xi</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xi</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xj</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xj</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xij</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xij</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="ident">xij</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xi</span>);
-                <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xj</span>);
-                <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xij</span>);
-                (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxi</span> <span class="op">-</span> <span class="ident">fxj</span> <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
+                <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
+                <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
+                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+                <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
+                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
+                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
+                (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxei</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">fxei</span>[<span class="ident">j</span>] <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
             };
             <span class="ident">out</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">=</span> <span class="ident">t</span>;
             <span class="ident">out</span>[<span class="ident">j</span>][<span class="ident">i</span>] <span class="op">=</span> <span class="ident">t</span>;
@@ -764,24 +750,27 @@
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
-    <span class="comment">// TODO: f(x + EPS * e_i) needs to be precomputed!!</span>
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+
+    <span class="comment">// Precompute f(x + sqrt(EPS) * e_i) for all i</span>
+    <span class="kw">let</span> <span class="ident">fxei</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">n</span>)
+        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">mod_and_calc_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">f</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
+        .<span class="ident">collect</span>();
+
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">zeros</span>((<span class="ident">n</span>, <span class="ident">n</span>));
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
         <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..=<span class="ident">i</span> {
             <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xi</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xi</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xj</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xj</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xij</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-                <span class="ident">xij</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="ident">xij</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-                <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xi</span>);
-                <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xj</span>);
-                <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xij</span>);
-                (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxi</span> <span class="op">-</span> <span class="ident">fxj</span> <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
+                <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
+                <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
+                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+                <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
+                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
+                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
+                (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxei</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">fxei</span>[<span class="ident">j</span>] <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
             };
             <span class="ident">out</span>[(<span class="ident">i</span>, <span class="ident">j</span>)] <span class="op">=</span> <span class="ident">t</span>;
             <span class="ident">out</span>[(<span class="ident">j</span>, <span class="ident">i</span>)] <span class="op">=</span> <span class="ident">t</span>;
@@ -793,23 +782,39 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_sparse_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
-    <span class="ident">indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>,
+    <span class="ident">indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idxs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">indices</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">iter</span>())
+        .<span class="ident">cloned</span>()
+        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span>();
+    <span class="ident">idxs</span>.<span class="ident">sort</span>();
+    <span class="ident">idxs</span>.<span class="ident">dedup</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fxei</span> <span class="op">=</span> <span class="ident">KV</span>::<span class="ident">new</span>(<span class="ident">idxs</span>.<span class="ident">len</span>());
+
+    <span class="kw">for</span> <span class="ident">idx</span> <span class="kw">in</span> <span class="ident">idxs</span>.<span class="ident">iter</span>() {
+        <span class="ident">fxei</span>.<span class="ident">set</span>(<span class="kw-2">*</span><span class="ident">idx</span>, <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">f</span>, <span class="kw-2">*</span><span class="ident">idx</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()));
+    }
+
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">j</span>) <span class="kw">in</span> <span class="ident">indices</span> {
+    <span class="kw">for</span> [<span class="ident">i</span>, <span class="ident">j</span>] <span class="kw">in</span> <span class="ident">indices</span> {
         <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xi</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xi</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xj</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xj</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xij</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xij</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="ident">xij</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xi</span>);
-            <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xj</span>);
-            <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xij</span>);
+            <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
+            <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
+            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+            <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
+            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
+            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
+
+            <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> <span class="ident">fxei</span>.<span class="ident">get</span>(<span class="ident">i</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> <span class="ident">fxei</span>.<span class="ident">get</span>(<span class="ident">j</span>).<span class="ident">unwrap</span>();
             (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxi</span> <span class="op">-</span> <span class="ident">fxj</span> <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
         };
         <span class="ident">out</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">=</span> <span class="ident">t</span>;
@@ -822,23 +827,43 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_sparse_ndarray_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
-    <span class="ident">indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>,
+    <span class="ident">indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idxs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">indices</span>
+        .<span class="ident">iter</span>()
+        .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">iter</span>())
+        .<span class="ident">cloned</span>()
+        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span>();
+    <span class="ident">idxs</span>.<span class="ident">sort</span>();
+    <span class="ident">idxs</span>.<span class="ident">dedup</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fxei</span> <span class="op">=</span> <span class="ident">KV</span>::<span class="ident">new</span>(<span class="ident">idxs</span>.<span class="ident">len</span>());
+
+    <span class="kw">for</span> <span class="ident">idx</span> <span class="kw">in</span> <span class="ident">idxs</span>.<span class="ident">iter</span>() {
+        <span class="ident">fxei</span>.<span class="ident">set</span>(
+            <span class="kw-2">*</span><span class="ident">idx</span>,
+            <span class="ident">mod_and_calc_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">f</span>, <span class="kw-2">*</span><span class="ident">idx</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()),
+        );
+    }
+
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array2</span>::<span class="ident">zeros</span>((<span class="ident">n</span>, <span class="ident">n</span>));
-    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">j</span>) <span class="kw">in</span> <span class="ident">indices</span> {
+    <span class="kw">for</span> [<span class="ident">i</span>, <span class="ident">j</span>] <span class="kw">in</span> <span class="ident">indices</span> {
         <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xi</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xi</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xj</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xj</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xij</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-            <span class="ident">xij</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="ident">xij</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xi</span>);
-            <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xj</span>);
-            <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xij</span>);
+            <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
+            <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
+            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>();
+            <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
+            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
+            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
+
+            <span class="kw">let</span> <span class="ident">fxi</span> <span class="op">=</span> <span class="ident">fxei</span>.<span class="ident">get</span>(<span class="ident">i</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">fxj</span> <span class="op">=</span> <span class="ident">fxei</span>.<span class="ident">get</span>(<span class="ident">j</span>).<span class="ident">unwrap</span>();
+
             (<span class="ident">fxij</span> <span class="op">-</span> <span class="ident">fxi</span> <span class="op">-</span> <span class="ident">fxj</span> <span class="op">+</span> <span class="ident">fx</span>) <span class="op">/</span> <span class="ident">EPS_F64</span>
         };
         <span class="ident">out</span>[(<span class="ident">i</span>, <span class="ident">j</span>)] <span class="op">=</span> <span class="ident">t</span>;
@@ -1008,8 +1033,7 @@
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">2.0</span>],
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">2.0</span>, <span class="number">2.0</span>],
         ];
-        <span class="comment">// println!(&quot;hessian:\n{:#?}&quot;, hessian);</span>
-        <span class="comment">// println!(&quot;diff:\n{:#?}&quot;, diff);</span>
+        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;hessian:\n{:#?}&quot;</span>, <span class="ident">hessian</span>);
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
             <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
                 <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>][<span class="ident">j</span>] <span class="op">-</span> <span class="ident">hessian</span>[<span class="ident">i</span>][<span class="ident">j</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>)
@@ -1042,7 +1066,7 @@
     <span class="kw">fn</span> <span class="ident">test_forward_hessian_nograd_sparse_vec_f64</span>() {
         <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">x</span>[<span class="number">0</span>] <span class="op">+</span> <span class="ident">x</span>[<span class="number">1</span>].<span class="ident">powi</span>(<span class="number">2</span>) <span class="op">+</span> <span class="ident">x</span>[<span class="number">2</span>] <span class="op">*</span> <span class="ident">x</span>[<span class="number">3</span>].<span class="ident">powi</span>(<span class="number">2</span>);
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>];
-        <span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">1</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">3</span>)];
+        <span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">3</span>, <span class="number">3</span>]];
         <span class="kw">let</span> <span class="ident">hessian</span> <span class="op">=</span> <span class="ident">forward_hessian_nograd_sparse_vec_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="ident">indices</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>],
@@ -1064,7 +1088,7 @@
     <span class="kw">fn</span> <span class="ident">test_forward_hessian_nograd_sparse_ndarray_f64</span>() {
         <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="op">|</span><span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">x</span>[<span class="number">0</span>] <span class="op">+</span> <span class="ident">x</span>[<span class="number">1</span>].<span class="ident">powi</span>(<span class="number">2</span>) <span class="op">+</span> <span class="ident">x</span>[<span class="number">2</span>] <span class="op">*</span> <span class="ident">x</span>[<span class="number">3</span>].<span class="ident">powi</span>(<span class="number">2</span>);
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>]);
-        <span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">1</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">3</span>)];
+        <span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">3</span>, <span class="number">3</span>]];
         <span class="kw">let</span> <span class="ident">hessian</span> <span class="op">=</span> <span class="ident">forward_hessian_nograd_sparse_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="ident">indices</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>],

@@ -218,7 +218,7 @@ Springer. ISBN 0-387-30303-0.</p>
 
 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>];
 
-<span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">1</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">3</span>)];
+<span class="kw">let</span> <span class="ident">indices</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">3</span>, <span class="number">3</span>]];
 
 <span class="kw">let</span> <span class="ident">hessian</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">forward_hessian_nograd_sparse</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="ident">indices</span>);
 
