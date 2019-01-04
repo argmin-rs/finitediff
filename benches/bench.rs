@@ -378,4 +378,23 @@ mod tests {
             black_box(x.forward_hessian_nograd(&cost_ndarray_f64));
         });
     }
+
+    #[bench]
+    fn forward_hessian_nograd_sparse_vec_f64(b: &mut Bencher) {
+        let x = vec![1.0f64; MASSIVENESS];
+        b.iter(|| {
+            let indices = vec![(1, 2), (23, 23), (128, 8)];
+            black_box(x.forward_hessian_nograd_sparse(&cost_vec_f64, indices));
+        });
+    }
+
+    #[cfg(feature = "ndarray")]
+    #[bench]
+    fn forward_hessian_nograd_sparse_ndarray_f64(b: &mut Bencher) {
+        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        b.iter(|| {
+            let indices = vec![(1, 2), (23, 23), (128, 8)];
+            black_box(x.forward_hessian_nograd_sparse(&cost_ndarray_f64, indices));
+        });
+    }
 }
