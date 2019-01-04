@@ -274,19 +274,25 @@ pub fn forward_hessian_nograd_sparse_vec_f64(
     idxs.sort();
     idxs.dedup();
 
+    let mut fxei = KV::new(idxs.len());
+
+    for idx in idxs.iter() {
+        fxei.set(*idx, mod_and_calc_vec_f64(&mut xt, f, *idx, EPS_F64.sqrt()));
+    }
+
     let mut out: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
     for [i, j] in indices {
         let t = {
-            let mut xi = x.clone();
-            xi[i] += EPS_F64.sqrt();
-            let mut xj = x.clone();
-            xj[j] += EPS_F64.sqrt();
-            let mut xij = x.clone();
-            xij[i] += EPS_F64.sqrt();
-            xij[j] += EPS_F64.sqrt();
-            let fxi = (f)(&xi);
-            let fxj = (f)(&xj);
-            let fxij = (f)(&xij);
+            let xti = xt[i];
+            let xtj = xt[j];
+            xt[i] += EPS_F64.sqrt();
+            xt[j] += EPS_F64.sqrt();
+            let fxij = (f)(&xt);
+            xt[i] = xti;
+            xt[j] = xtj;
+
+            let fxi = fxei.get(i).unwrap();
+            let fxj = fxei.get(j).unwrap();
             (fxij - fxi - fxj + fx) / EPS_F64
         };
         out[i][j] = t;
