@@ -295,9 +295,7 @@ pub use crate::pert::*;
 #[cfg(feature = "ndarray")]
 use ndarray;
 
-/// Ideally, `EPS_F64` should be set to `EPSILON`; however, this caused numerical  problems which
-/// where solved by multiplying it with `4.0`. This may require some investigation.
-const EPS_F64: f64 = 1.0 * std::f64::EPSILON;
+const EPS_F64: f64 = std::f64::EPSILON;
 
 pub trait FiniteDiff
 where
