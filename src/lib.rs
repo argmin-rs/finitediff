@@ -297,7 +297,7 @@ use ndarray;
 
 /// Ideally, `EPS_F64` should be set to `EPSILON`; however, this caused numerical  problems which
 /// where solved by multiplying it with `4.0`. This may require some investigation.
-const EPS_F64: f64 = 4.0 * std::f64::EPSILON;
+const EPS_F64: f64 = 1.0 * std::f64::EPSILON;
 
 pub trait FiniteDiff
 where
@@ -591,6 +591,8 @@ mod tests {
     use super::*;
     #[cfg(feature = "ndarray")]
     use ndarray;
+    #[cfg(feature = "ndarray")]
+    use ndarray::array;
 
     const COMP_ACC: f64 = 1e-6;
 
@@ -817,7 +819,7 @@ mod tests {
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 11.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < 5.5 * COMP_ACC)
         }
     }
 
@@ -841,7 +843,7 @@ mod tests {
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 11.0 * COMP_ACC)
+            assert!((res[i] - jacobian[i]).abs() < 5.5 * COMP_ACC)
         }
     }
 
@@ -1061,9 +1063,9 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = p.forward_hessian(&|d| d.forward_diff(&f));
+        let hessian = p.forward_hessian(&g);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
@@ -1082,9 +1084,9 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[test]
     fn test_forward_hessian_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = p.forward_hessian(&|d| d.forward_diff(&f));
+        let hessian = p.forward_hessian(&g);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
@@ -1102,9 +1104,9 @@ mod tests {
 
     #[test]
     fn test_central_hessian_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = p.central_hessian(&|d| d.central_diff(&f));
+        let hessian = p.central_hessian(&g);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
@@ -1123,9 +1125,9 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[test]
     fn test_central_hessian_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = p.central_hessian(&|d| d.central_diff(&f));
+        let hessian = p.central_hessian(&g);
         let res = vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
@@ -1143,10 +1145,10 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_vec_prod_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let x = vec![1.0f64, 1.0, 1.0, 1.0];
         let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = x.forward_hessian_vec_prod(&|d| d.forward_diff(&f), &p);
+        let hessian = x.forward_hessian_vec_prod(&g, &p);
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1158,10 +1160,10 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[test]
     fn test_forward_hessian_vec_prod_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
         let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = x.forward_hessian_vec_prod(&|d| d.forward_diff(&f), &p);
+        let hessian = x.forward_hessian_vec_prod(&g, &p);
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1172,10 +1174,10 @@ mod tests {
 
     #[test]
     fn test_central_hessian_vec_prod_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let x = vec![1.0f64, 1.0, 1.0, 1.0];
         let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = x.central_hessian_vec_prod(&|d| d.central_diff(&f), &p);
+        let hessian = x.central_hessian_vec_prod(&g, &p);
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1187,10 +1189,10 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[test]
     fn test_central_hessian_vec_prod_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
         let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
         let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = x.central_hessian_vec_prod(&|d| d.central_diff(&f), &p);
+        let hessian = x.central_hessian_vec_prod(&g, &p);
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
