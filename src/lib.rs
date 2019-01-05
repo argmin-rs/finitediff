@@ -186,11 +186,11 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//! let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
-//! let hessian = x.forward_hessian(&|d| d.forward_diff(&f));
+//! let hessian = x.forward_hessian(&g);
 //!
 //! let res = vec![
 //!     vec![0.0, 0.0, 0.0, 0.0],
@@ -212,12 +212,12 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//! let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //! let p = vec![2.0, 3.0, 4.0, 5.0];
 //!
-//! let hessian = x.forward_hessian_vec_prod(&|d| d.forward_diff(&f), &p);
+//! let hessian = x.forward_hessian_vec_prod(&g, &p);
 //!
 //! let res = vec![0.0, 6.0, 10.0, 18.0];
 //!
