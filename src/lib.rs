@@ -283,12 +283,16 @@
 #![allow(clippy::ptr_arg)]
 
 mod diff;
+#[cfg(feature = "ndarray")]
+mod diff_ndarray;
 mod hessian;
 mod jacobian;
 mod pert;
 mod utils;
 
 use crate::diff::*;
+#[cfg(feature = "ndarray")]
+use crate::diff_ndarray::*;
 use crate::hessian::*;
 use crate::jacobian::*;
 pub use crate::pert::*;
