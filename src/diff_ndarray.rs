@@ -43,9 +43,12 @@ mod tests {
 
     const COMP_ACC: f64 = 1e-6;
 
+    fn f(x: &ndarray::Array1<f64>) -> f64 {
+        x[0] + x[1].powi(2)
+    }
+
     #[test]
     fn test_forward_diff_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
 
         let grad = forward_diff_ndarray_f64(&p, &f);
@@ -65,7 +68,6 @@ mod tests {
     }
     #[test]
     fn test_central_diff_ndarray_f64() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
         let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
 
         let grad = central_diff_ndarray_f64(&p, &f);

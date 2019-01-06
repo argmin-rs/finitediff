@@ -36,9 +36,12 @@ mod tests {
 
     const COMP_ACC: f64 = 1e-6;
 
+    fn f(x: &Vec<f64>) -> f64 {
+        x[0] + x[1].powi(2)
+    }
+
     #[test]
     fn test_forward_diff_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
         let p = vec![1.0f64, 1.0f64];
         let grad = forward_diff_vec_f64(&p, &f);
         let res = vec![1.0f64, 2.0];
@@ -58,7 +61,6 @@ mod tests {
 
     #[test]
     fn test_central_diff_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
         let p = vec![1.0f64, 1.0f64];
         let grad = central_diff_vec_f64(&p, &f);
         let res = vec![1.0f64, 2.0];
