@@ -286,6 +286,8 @@ mod diff;
 #[cfg(feature = "ndarray")]
 mod diff_ndarray;
 mod hessian;
+#[cfg(feature = "ndarray")]
+mod hessian_ndarray;
 mod jacobian;
 #[cfg(feature = "ndarray")]
 mod jacobian_ndarray;
@@ -296,6 +298,8 @@ use crate::diff::*;
 #[cfg(feature = "ndarray")]
 use crate::diff_ndarray::*;
 use crate::hessian::*;
+#[cfg(feature = "ndarray")]
+use crate::hessian_ndarray::*;
 use crate::jacobian::*;
 #[cfg(feature = "ndarray")]
 use crate::jacobian_ndarray::*;
