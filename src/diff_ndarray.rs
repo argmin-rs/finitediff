@@ -39,7 +39,6 @@ pub fn central_diff_ndarray_f64(
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[cfg(feature = "ndarray")]
     use ndarray;
 
     const COMP_ACC: f64 = 1e-6;
