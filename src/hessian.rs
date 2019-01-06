@@ -176,17 +176,39 @@ mod tests {
 
     const COMP_ACC: f64 = 1e-6;
 
-    #[test]
-    fn test_forward_hessian_vec_f64() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = forward_hessian_vec_f64(&p, &g);
-        let res = vec![
+    fn f(x: &Vec<f64>) -> f64 {
+        x[0] + x[1].powi(2) + x[2] * x[3].powi(2)
+    }
+
+    fn g(x: &Vec<f64>) -> Vec<f64> {
+        vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]
+    }
+
+    fn x() -> Vec<f64> {
+        vec![1.0f64, 1.0, 1.0, 1.0]
+    }
+
+    fn p() -> Vec<f64> {
+        vec![2.0, 3.0, 4.0, 5.0]
+    }
+
+    fn res1() -> Vec<Vec<f64>> {
+        vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
             vec![0.0, 0.0, 0.0, 2.0],
             vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        ]
+    }
+
+    fn res2() -> Vec<f64> {
+        vec![0.0, 6.0, 10.0, 18.0]
+    }
+
+    #[test]
+    fn test_forward_hessian_vec_f64() {
+        let hessian = forward_hessian_vec_f64(&x(), &g);
+        let res = res1();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -198,15 +220,8 @@ mod tests {
 
     #[test]
     fn test_central_hessian_vec_f64() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = central_hessian_vec_f64(&p, &g);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = central_hessian_vec_f64(&x(), &g);
+        let res = res1();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -218,11 +233,8 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_vec_prod_vec_f64() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = forward_hessian_vec_prod_vec_f64(&x, &g, &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
+        let hessian = forward_hessian_vec_prod_vec_f64(&x(), &g, &p());
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -232,11 +244,8 @@ mod tests {
 
     #[test]
     fn test_central_hessian_vec_prod_vec_f64() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = central_hessian_vec_prod_vec_f64(&x, &g, &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
+        let hessian = central_hessian_vec_prod_vec_f64(&x(), &g, &p());
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -246,15 +255,8 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_nograd_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = forward_hessian_nograd_vec_f64(&p, &f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = forward_hessian_nograd_vec_f64(&x(), &f);
+        let res = res1();
         // println!("hessian:\n{:#?}", hessian);
         for i in 0..4 {
             for j in 0..4 {
@@ -265,16 +267,9 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_nograd_sparse_vec_f64() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
         let indices = vec![[1, 1], [2, 3], [3, 3]];
-        let hessian = forward_hessian_nograd_sparse_vec_f64(&p, &f, indices);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = forward_hessian_nograd_sparse_vec_f64(&x(), &f, indices);
+        let res = res1();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
