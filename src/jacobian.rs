@@ -149,28 +149,58 @@ mod tests {
 
     const COMP_ACC: f64 = 1e-6;
 
-    #[test]
-    fn test_forward_jacobian_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let jacobian = forward_jacobian_vec_f64(&p, &f);
-        let res = vec![
+    fn f(x: &Vec<f64>) -> Vec<f64> {
+        vec![
+            2.0 * (x[1].powi(3) - x[0].powi(2)),
+            3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+            3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+            3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+            3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+            3.0 * (x[5].powi(3) - x[4].powi(2)),
+        ]
+    }
+
+    fn res1() -> Vec<Vec<f64>> {
+        vec![
             vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
             vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
             vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
             vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
             vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
             vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        ]
+    }
+
+    fn res2() -> Vec<f64> {
+        vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0]
+    }
+
+    fn x() -> Vec<f64> {
+        vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]
+    }
+
+    fn p() -> Vec<f64> {
+        vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0]
+    }
+
+    fn pert() -> PerturbationVectors {
+        vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ]
+    }
+
+    #[test]
+    fn test_forward_jacobian_vec_f64() {
+        let jacobian = forward_jacobian_vec_f64(&x(), &f);
+        let res = res1();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             for j in 0..6 {
@@ -181,26 +211,8 @@ mod tests {
 
     #[test]
     fn test_central_jacobian_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let jacobian = central_jacobian_vec_f64(&p, &f);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = central_jacobian_vec_f64(&x(), &f);
+        let res = res1();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             for j in 0..6 {
@@ -211,20 +223,8 @@ mod tests {
 
     #[test]
     fn test_forward_jacobian_vec_prod_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
-        let jacobian = forward_jacobian_vec_prod_vec_f64(&x, &f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+        let jacobian = forward_jacobian_vec_prod_vec_f64(&x(), &f, &p());
+        let res = res2();
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
@@ -234,20 +234,8 @@ mod tests {
 
     #[test]
     fn test_central_jacobian_vec_prod_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
-        let jacobian = central_jacobian_vec_prod_vec_f64(&x, &f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+        let jacobian = central_jacobian_vec_prod_vec_f64(&x(), &f, &p());
+        let res = res2();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
@@ -256,37 +244,8 @@ mod tests {
 
     #[test]
     fn test_forward_jacobian_pert_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = forward_jacobian_pert_vec_f64(&p, &f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = forward_jacobian_pert_vec_f64(&x(), &f, pert());
+        let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
         for i in 0..6 {
@@ -298,37 +257,8 @@ mod tests {
 
     #[test]
     fn test_central_jacobian_pert_vec_f64() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = central_jacobian_pert_vec_f64(&p, &f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = central_jacobian_pert_vec_f64(&x(), &f, pert());
+        let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
         for i in 0..6 {
