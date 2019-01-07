@@ -597,20 +597,95 @@ where
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_vec {
     use super::*;
-    #[cfg(feature = "ndarray")]
-    use ndarray;
-    #[cfg(feature = "ndarray")]
-    use ndarray::array;
 
     const COMP_ACC: f64 = 1e-6;
 
+    fn f1(x: &Vec<f64>) -> f64 {
+        x[0] + x[1].powi(2)
+    }
+
+    fn f2(x: &Vec<f64>) -> Vec<f64> {
+        vec![
+            2.0 * (x[1].powi(3) - x[0].powi(2)),
+            3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+            3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+            3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+            3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+            3.0 * (x[5].powi(3) - x[4].powi(2)),
+        ]
+    }
+
+    fn f3(x: &Vec<f64>) -> f64 {
+        x[0] + x[1].powi(2) + x[2] * x[3].powi(2)
+    }
+
+    fn g(x: &Vec<f64>) -> Vec<f64> {
+        vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]
+    }
+
+    fn x1() -> Vec<f64> {
+        vec![1.0f64, 1.0f64]
+    }
+
+    fn x2() -> Vec<f64> {
+        vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]
+    }
+
+    fn x3() -> Vec<f64> {
+        vec![1.0f64, 1.0, 1.0, 1.0]
+    }
+
+    fn res1() -> Vec<Vec<f64>> {
+        vec![
+            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+        ]
+    }
+
+    fn res2() -> Vec<Vec<f64>> {
+        vec![
+            vec![0.0, 0.0, 0.0, 0.0],
+            vec![0.0, 2.0, 0.0, 0.0],
+            vec![0.0, 0.0, 0.0, 2.0],
+            vec![0.0, 0.0, 2.0, 2.0],
+        ]
+    }
+
+    fn res3() -> Vec<f64> {
+        vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0]
+    }
+
+    fn pert() -> PerturbationVectors {
+        vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ]
+    }
+
+    fn p1() -> Vec<f64> {
+        vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0]
+    }
+
+    fn p2() -> Vec<f64> {
+        vec![2.0, 3.0, 4.0, 5.0]
+    }
+
     #[test]
     fn test_forward_diff_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
-        let p = vec![1.0f64, 1.0f64];
-        let grad = p.forward_diff(&f);
+        let grad = x1().forward_diff(&f1);
         let res = vec![1.0f64, 2.0];
 
         for i in 0..2 {
@@ -618,29 +693,7 @@ mod tests {
         }
 
         let p = vec![1.0f64, 2.0f64];
-        let grad = p.forward_diff(&f);
-        let res = vec![1.0f64, 4.0];
-
-        for i in 0..2 {
-            assert!((res[i] - grad[i]).abs() < COMP_ACC)
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_diff_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
-
-        let grad = p.forward_diff(&f);
-        let res = vec![1.0f64, 2.0];
-
-        for i in 0..2 {
-            assert!((res[i] - grad[i]).abs() < COMP_ACC)
-        }
-
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0f64]);
-        let grad = p.forward_diff(&f);
+        let grad = p.forward_diff(&f1);
         let res = vec![1.0f64, 4.0];
 
         for i in 0..2 {
@@ -650,9 +703,7 @@ mod tests {
 
     #[test]
     fn test_central_diff_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
-        let p = vec![1.0f64, 1.0f64];
-        let grad = p.central_diff(&f);
+        let grad = x1().central_diff(&f1);
         let res = vec![1.0f64, 2.0];
 
         for i in 0..2 {
@@ -660,29 +711,7 @@ mod tests {
         }
 
         let p = vec![1.0f64, 2.0f64];
-        let grad = p.central_diff(&f);
-        let res = vec![1.0f64, 4.0];
-
-        for i in 0..2 {
-            assert!((res[i] - grad[i]).abs() < COMP_ACC)
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_diff_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
-
-        let grad = p.central_diff(&f);
-        let res = vec![1.0f64, 2.0];
-
-        for i in 0..2 {
-            assert!((res[i] - grad[i]).abs() < COMP_ACC)
-        }
-
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0f64]);
-        let grad = p.central_diff(&f);
+        let grad = p.central_diff(&f1);
         let res = vec![1.0f64, 4.0];
 
         for i in 0..2 {
@@ -692,26 +721,8 @@ mod tests {
 
     #[test]
     fn test_forward_jacobian_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let jacobian = p.forward_jacobian(&f);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = x2().forward_jacobian(&f2);
+        let res = res1();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             for j in 0..6 {
@@ -720,58 +731,10 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_jacobian_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let jacobian = p.forward_jacobian(&f);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
-        // println!("{:?}", jacobian);
-        for i in 0..6 {
-            for j in 0..6 {
-                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
-            }
-        }
-    }
     #[test]
     fn test_central_jacobian_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let jacobian = p.central_jacobian(&f);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = x2().central_jacobian(&f2);
+        let res = res1();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             for j in 0..6 {
@@ -780,76 +743,10 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_jacobian_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let jacobian = p.central_jacobian(&f);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
-        // println!("{:?}", jacobian);
-        for i in 0..6 {
-            for j in 0..6 {
-                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
-            }
-        }
-    }
     #[test]
     fn test_forward_jacobian_vec_prod_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
-        let jacobian = x.forward_jacobian_vec_prod(&f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
-        // println!("{:?}", jacobian);
-        // the accuracy for this is pretty bad!!
-        for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < 5.5 * COMP_ACC)
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_jacobian_vec_prod_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0]);
-        let jacobian = x.forward_jacobian_vec_prod(&f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+        let jacobian = x2().forward_jacobian_vec_prod(&f2, &p1());
+        let res = res3();
         // println!("{:?}", jacobian);
         // the accuracy for this is pretty bad!!
         for i in 0..6 {
@@ -859,166 +756,31 @@ mod tests {
 
     #[test]
     fn test_central_jacobian_vec_prod_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
-        let jacobian = x.central_jacobian_vec_prod(&f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+        let jacobian = x2().central_jacobian_vec_prod(&f2, &p1());
+        let res = res3();
         // println!("{:?}", jacobian);
         for i in 0..6 {
             assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_jacobian_vec_prod_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0]);
-        let jacobian = x.central_jacobian_vec_prod(&f, &p);
-        let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
-        // println!("{:?}", jacobian);
-        for i in 0..6 {
-            assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
-        }
-    }
     #[test]
     fn test_forward_jacobian_pert_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = p.forward_jacobian_pert(&f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = x2().forward_jacobian_pert(&f2, pert());
+        let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
         for i in 0..6 {
             for j in 0..6 {
                 assert!((res[i][j] - jacobian[i][j]).abs() < COMP_ACC)
-            }
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_jacobian_pert_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = p.forward_jacobian_pert(&f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
-        // println!("jacobian:\n{:?}", jacobian);
-        // println!("res:\n{:?}", res);
-        for i in 0..6 {
-            for j in 0..6 {
-                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
             }
         }
     }
 
     #[test]
     fn test_central_jacobian_pert_vec_f64_trait() {
-        let f = |x: &Vec<f64>| {
-            vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ]
-        };
-        let p = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = p.central_jacobian_pert(&f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
+        let jacobian = x2().central_jacobian_pert(&f2, pert());
+        let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
         for i in 0..6 {
@@ -1028,101 +790,23 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_jacobian_pert_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| {
-            ndarray::Array1::from_vec(vec![
-                2.0 * (x[1].powi(3) - x[0].powi(2)),
-                3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-                3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-                3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-                3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-                3.0 * (x[5].powi(3) - x[4].powi(2)),
-            ])
-        };
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]);
-        let pert = vec![
-            PerturbationVector::new()
-                .add(0, vec![0, 1])
-                .add(3, vec![2, 3, 4]),
-            PerturbationVector::new()
-                .add(1, vec![0, 1, 2])
-                .add(4, vec![3, 4, 5]),
-            PerturbationVector::new()
-                .add(2, vec![1, 2, 3])
-                .add(5, vec![4, 5]),
-        ];
-        let jacobian = p.central_jacobian_pert(&f, pert);
-        let res = vec![
-            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-        ];
-        // println!("jacobian:\n{:?}", jacobian);
-        // println!("res:\n{:?}", res);
-        for i in 0..6 {
-            for j in 0..6 {
-                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
-            }
-        }
-    }
-
     #[test]
     fn test_forward_hessian_vec_f64_trait() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = p.forward_hessian(&g);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = x3().forward_hessian(&g);
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
             for j in 0..4 {
                 assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
-            }
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_ndarray_f64_trait() {
-        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = p.forward_hessian(&g);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        for i in 0..4 {
-            for j in 0..4 {
-                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
             }
         }
     }
 
     #[test]
     fn test_central_hessian_vec_f64_trait() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = p.central_hessian(&g);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = x3().central_hessian(&g);
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -1132,48 +816,9 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_hessian_ndarray_f64_trait() {
-        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = p.central_hessian(&g);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        for i in 0..4 {
-            for j in 0..4 {
-                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
-            }
-        }
-    }
-
     #[test]
     fn test_forward_hessian_vec_prod_vec_f64_trait() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = x.forward_hessian_vec_prod(&g, &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        for i in 0..4 {
-            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_vec_prod_ndarray_f64_trait() {
-        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = x.forward_hessian_vec_prod(&g, &p);
+        let hessian = x3().forward_hessian_vec_prod(&g, &p2());
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1184,25 +829,7 @@ mod tests {
 
     #[test]
     fn test_central_hessian_vec_prod_vec_f64_trait() {
-        let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = vec![1.0f64, 1.0, 1.0, 1.0];
-        let p = vec![2.0, 3.0, 4.0, 5.0];
-        let hessian = x.central_hessian_vec_prod(&g, &p);
-        let res = vec![0.0, 6.0, 10.0, 18.0];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        for i in 0..4 {
-            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_central_hessian_vec_prod_ndarray_f64_trait() {
-        let g = |x: &ndarray::Array1<f64>| array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
-        let x = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let p = ndarray::Array1::from_vec(vec![2.0, 3.0, 4.0, 5.0]);
-        let hessian = x.central_hessian_vec_prod(&g, &p);
+        let hessian = x3().central_hessian_vec_prod(&g, &p2());
         let res = vec![0.0, 6.0, 10.0, 18.0];
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
@@ -1213,57 +840,22 @@ mod tests {
 
     #[test]
     fn test_forward_hessian_nograd_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
-        let hessian = p.forward_hessian_nograd(&f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = x3().forward_hessian_nograd(&f3);
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
             for j in 0..4 {
                 assert!((res[i][j] - hessian[i][j]).abs() < COMP_ACC)
-            }
-        }
-    }
-
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_nograd_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let hessian = p.forward_hessian_nograd(&f);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
-        // println!("hessian:\n{:#?}", hessian);
-        // println!("diff:\n{:#?}", diff);
-        for i in 0..4 {
-            for j in 0..4 {
-                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
             }
         }
     }
 
     #[test]
     fn test_forward_hessian_nograd_sparse_vec_f64_trait() {
-        let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = vec![1.0f64, 1.0, 1.0, 1.0];
         let indices = vec![[1, 1], [2, 3], [3, 3]];
-        let hessian = p.forward_hessian_nograd_sparse(&f, indices);
-        let res = vec![
-            vec![0.0, 0.0, 0.0, 0.0],
-            vec![0.0, 2.0, 0.0, 0.0],
-            vec![0.0, 0.0, 0.0, 2.0],
-            vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        let hessian = x3().forward_hessian_nograd_sparse(&f3, indices);
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -1273,19 +865,209 @@ mod tests {
         }
     }
 
-    #[cfg(feature = "ndarray")]
-    #[test]
-    fn test_forward_hessian_nograd_sparse_ndarray_f64_trait() {
-        let f = |x: &ndarray::Array1<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0, 1.0, 1.0]);
-        let indices = vec![[1, 1], [2, 3], [3, 3]];
-        let hessian = p.forward_hessian_nograd_sparse(&f, indices);
-        let res = vec![
+}
+
+#[cfg(feature = "ndarray")]
+#[cfg(test)]
+mod tests_ndarray {
+    use super::*;
+    use ndarray;
+    use ndarray::{array, Array1};
+
+    const COMP_ACC: f64 = 1e-6;
+
+    fn f1(x: &Array1<f64>) -> f64 {
+        x[0] + x[1].powi(2)
+    }
+
+    fn f2(x: &Array1<f64>) -> Array1<f64> {
+        array![
+            2.0 * (x[1].powi(3) - x[0].powi(2)),
+            3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+            3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+            3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+            3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+            3.0 * (x[5].powi(3) - x[4].powi(2)),
+        ]
+    }
+
+    fn f3(x: &Array1<f64>) -> f64 {
+        x[0] + x[1].powi(2) + x[2] * x[3].powi(2)
+    }
+
+    fn g(x: &Array1<f64>) -> Array1<f64> {
+        array![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]
+    }
+
+    fn x1() -> Array1<f64> {
+        array![1.0f64, 1.0f64]
+    }
+
+    fn x2() -> Array1<f64> {
+        array![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0]
+    }
+
+    fn x3() -> Array1<f64> {
+        array![1.0f64, 1.0, 1.0, 1.0]
+    }
+
+    fn res1() -> Vec<Vec<f64>> {
+        vec![
+            vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+            vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+            vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+            vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+            vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+            vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+        ]
+    }
+
+    fn res2() -> Vec<Vec<f64>> {
+        vec![
             vec![0.0, 0.0, 0.0, 0.0],
             vec![0.0, 2.0, 0.0, 0.0],
             vec![0.0, 0.0, 0.0, 2.0],
             vec![0.0, 0.0, 2.0, 2.0],
-        ];
+        ]
+    }
+
+    fn res3() -> Vec<f64> {
+        vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0]
+    }
+
+    fn pert() -> PerturbationVectors {
+        vec![
+            PerturbationVector::new()
+                .add(0, vec![0, 1])
+                .add(3, vec![2, 3, 4]),
+            PerturbationVector::new()
+                .add(1, vec![0, 1, 2])
+                .add(4, vec![3, 4, 5]),
+            PerturbationVector::new()
+                .add(2, vec![1, 2, 3])
+                .add(5, vec![4, 5]),
+        ]
+    }
+
+    fn p1() -> Array1<f64> {
+        array![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0]
+    }
+
+    fn p2() -> Array1<f64> {
+        array![2.0, 3.0, 4.0, 5.0]
+    }
+
+    #[test]
+    fn test_forward_diff_ndarray_f64_trait() {
+        let grad = x1().forward_diff(&f1);
+        let res = array![1.0f64, 2.0];
+
+        for i in 0..2 {
+            assert!((res[i] - grad[i]).abs() < COMP_ACC)
+        }
+
+        let x = array![1.0f64, 2.0f64];
+        let grad = x.forward_diff(&f1);
+        let res = vec![1.0f64, 4.0];
+
+        for i in 0..2 {
+            assert!((res[i] - grad[i]).abs() < COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_central_diff_ndarray_f64_trait() {
+        let grad = x1().central_diff(&f1);
+        let res = vec![1.0f64, 2.0];
+
+        for i in 0..2 {
+            assert!((res[i] - grad[i]).abs() < COMP_ACC)
+        }
+
+        let x = array![1.0f64, 2.0f64];
+        let grad = x.central_diff(&f1);
+        let res = vec![1.0f64, 4.0];
+
+        for i in 0..2 {
+            assert!((res[i] - grad[i]).abs() < COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_forward_jacobian_ndarray_f64_trait() {
+        let jacobian = x2().forward_jacobian(&f2);
+        let res = res1();
+        // println!("{:?}", jacobian);
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_central_jacobian_ndarray_f64_trait() {
+        let jacobian = x2().central_jacobian(&f2);
+        let res = res1();
+        // println!("{:?}", jacobian);
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_forward_jacobian_vec_prod_ndarray_f64_trait() {
+        let jacobian = x2().forward_jacobian_vec_prod(&f2, &p1());
+        let res = res3();
+        // println!("{:?}", jacobian);
+        // the accuracy for this is pretty bad!!
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < 5.5 * COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_central_jacobian_vec_prod_ndarray_f64_trait() {
+        let jacobian = x2().central_jacobian_vec_prod(&f2, &p1());
+        let res = res3();
+        // println!("{:?}", jacobian);
+        for i in 0..6 {
+            assert!((res[i] - jacobian[i]).abs() < COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_forward_jacobian_pert_ndarray_f64_trait() {
+        let jacobian = x2().forward_jacobian_pert(&f2, pert());
+        let res = res1();
+        // println!("jacobian:\n{:?}", jacobian);
+        // println!("res:\n{:?}", res);
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_central_jacobian_pert_ndarray_f64_trait() {
+        let jacobian = x2().central_jacobian_pert(&f2, pert());
+        let res = res1();
+        // println!("jacobian:\n{:?}", jacobian);
+        // println!("res:\n{:?}", res);
+        for i in 0..6 {
+            for j in 0..6 {
+                assert!((res[i][j] - jacobian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_forward_hessian_ndarray_f64_trait() {
+        let hessian = x3().forward_hessian(&g);
+        let res = res2();
         // println!("hessian:\n{:#?}", hessian);
         // println!("diff:\n{:#?}", diff);
         for i in 0..4 {
@@ -1294,4 +1076,67 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_central_hessian_ndarray_f64_trait() {
+        let hessian = x3().central_hessian(&g);
+        let res = res2();
+        // println!("hessian:\n{:#?}", hessian);
+        // println!("diff:\n{:#?}", diff);
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_forward_hessian_vec_prod_ndarray_f64_trait() {
+        let hessian = x3().forward_hessian_vec_prod(&g, &p2());
+        let res = vec![0.0, 6.0, 10.0, 18.0];
+        // println!("hessian:\n{:#?}", hessian);
+        // println!("diff:\n{:#?}", diff);
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_central_hessian_vec_prod_ndarray_f64_trait() {
+        let hessian = x3().central_hessian_vec_prod(&g, &p2());
+        let res = vec![0.0, 6.0, 10.0, 18.0];
+        // println!("hessian:\n{:#?}", hessian);
+        // println!("diff:\n{:#?}", diff);
+        for i in 0..4 {
+            assert!((res[i] - hessian[i]).abs() < COMP_ACC)
+        }
+    }
+
+    #[test]
+    fn test_forward_hessian_nograd_ndarray_f64_trait() {
+        let hessian = x3().forward_hessian_nograd(&f3);
+        let res = res2();
+        // println!("hessian:\n{:#?}", hessian);
+        // println!("diff:\n{:#?}", diff);
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
+    #[test]
+    fn test_forward_hessian_nograd_sparse_ndarray_f64_trait() {
+        let indices = vec![[1, 1], [2, 3], [3, 3]];
+        let hessian = x3().forward_hessian_nograd_sparse(&f3, indices);
+        let res = res2();
+        // println!("hessian:\n{:#?}", hessian);
+        // println!("diff:\n{:#?}", diff);
+        for i in 0..4 {
+            for j in 0..4 {
+                assert!((res[i][j] - hessian[(i, j)]).abs() < COMP_ACC)
+            }
+        }
+    }
+
 }
