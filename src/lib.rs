@@ -5,14 +5,40 @@
 // http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-//! Finite Differentiation
+//! This crate contains a wide range of methods for the calculation of gradients, Jacobians and
+//! Hessians using forward and central differences.
+//! The methods have been implemented for input vectors of the type `Vec<f64>` and
+//! `ndarray::Array1<f64>`.
 //!
 //! # References
 //!
 //! Jorge Nocedal and Stephen J. Wright (2006). Numerical Optimization.
 //! Springer. ISBN 0-387-30303-0.
 //!
+//! # Usage
+//!
+//! Add this to your `dependencies` section of `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! finitediff = { git = "https://github.com/argmin-rs/finitediff" }
+//! ```
+//!
 //! # Examples
+//!
+//! * [Calculation of the gradient](#calculation-of-the-gradient)
+//!   * [Using forward differences](#using-forward-differences)
+//!   * [Using central differences](#using-central-differences)
+//! * [Calculation of the Jacobian](#calculation-of-the-jacobian)
+//!   * [Full Jacobian](#full-jacobian)
+//!   * [Product of the Jacobian `J(x)` with a vector `p`](#product-of-the-jacobian-jx-with-a-vector-p)
+//!   * [Sparse Jacobian](#sparse-jacobian)
+//! * [Calculation of the Hessian](#calculation-of-the-hessian)
+//!   * [Full Hessian](#full-hessian)
+//!   * [Product of the Hessian `H(x)` with a vector `p`](#product-of-the-hessian-hx-with-a-vector-p)
+//!   * [Calculation of the Hessian without knowledge of the gradient](#calculation-of-the-hessian-without-knowledge-of-the-gradient)
+//!   * [Calculation of the sparse Hessian without knowledge of the gradient](#calculation-of-the-sparse-hessian-without-knowledge-of-the-gradient)
+//!
 //!
 //! ## Calculation of the gradient
 //!
@@ -207,7 +233,7 @@
 //! }
 //! ```
 //!
-//! ### Product of Hessian `H(x)` with a vector `p`
+//! ### Product of the Hessian `H(x)` with a vector `p`
 //!
 //! ```rust
 //! use finitediff::FiniteDiff;
