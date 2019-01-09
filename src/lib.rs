@@ -42,6 +42,10 @@
 //!
 //! ## Calculation of the gradient
 //!
+//! This section illustrates the computation of a gradient of a fuction `f` at a point `x` of type
+//! `Vec<f64>`.
+//! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
+//!
 //! ### Using forward differences
 //!
 //! ```rust
@@ -89,6 +93,8 @@
 //! ```
 //!
 //! ## Calculation of the Jacobian
+//!
+//! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
 //!
 //! ### Full Jacobian
 //!
@@ -206,6 +212,8 @@
 //! ```
 //!
 //! ## Calculation of the Hessian
+//!
+//! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
 //!
 //! ### Full Hessian
 //!
