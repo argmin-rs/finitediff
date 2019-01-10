@@ -24,6 +24,14 @@
 //! finitediff = { git = "https://github.com/argmin-rs/finitediff" }
 //! ```
 //!
+//! To use the `FiniteDiff` trait implementations on the `ndarray` types, please activate the
+//! `ndarray` feature:
+//!
+//! ```toml
+//! [dependencies]
+//! finitediff = { git = "https://github.com/argmin-rs/finitediff", features = ["ndarray"] }
+//! ```
+//!
 //! # Examples
 //!
 //! * [Calculation of the gradient](#calculation-of-the-gradient)
@@ -114,7 +122,11 @@
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
 //!
-//! let jacobian = x.forward_jacobian(&f);
+//! // Using forward differences
+//! let jacobian_forward = x.forward_jacobian(&f);
+//!
+//! // Using central differences
+//! let jacobian_central = x.central_jacobian(&f);
 //!
 //! let res = vec![
 //!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
@@ -128,7 +140,8 @@
 //! // Check result
 //! for i in 0..6 {
 //!     for j in 0..6 {
-//!         assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6)
+//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
+//!         assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
 //!     }
 //! }
 //! ```
@@ -152,13 +165,18 @@
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
 //! let p = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0];
 //!
-//! let jacobian = x.forward_jacobian_vec_prod(&f, &p);
+//! // using forward differences
+//! let jacobian_forward = x.forward_jacobian_vec_prod(&f, &p);
+//!
+//! // using central differences
+//! let jacobian_central = x.central_jacobian_vec_prod(&f, &p);
 //!
 //! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
 //!
 //! // Check result
 //! for i in 0..6 {
-//!     assert!((res[i] - jacobian[i]).abs() < 11.0*1e-6)
+//!     assert!((res[i] - jacobian_forward[i]).abs() < 11.0*1e-6);
+//!     assert!((res[i] - jacobian_central[i]).abs() < 11.0*1e-6);
 //! }
 //! ```
 //!
@@ -192,7 +210,11 @@
 //!         .add(5, vec![4, 5]),
 //! ];
 //!
-//! let jacobian = x.forward_jacobian_pert(&f, pert);
+//! // using forward differences
+//! let jacobian_forward = x.forward_jacobian_pert(&f, pert.clone());
+//!
+//! // using central differences
+//! let jacobian_central = x.central_jacobian_pert(&f, pert);
 //!
 //! let res = vec![
 //!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
@@ -206,7 +228,8 @@
 //! // Check result
 //! for i in 0..6 {
 //!     for j in 0..6 {
-//!         assert!((res[i][j] - jacobian[i][j]).abs() < 1e-6)
+//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
+//!         assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
 //!     }
 //! }
 //! ```
