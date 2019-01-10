@@ -211,10 +211,10 @@
 //! ];
 //!
 //! // using forward differences
-//! let jacobian_forward = x.forward_jacobian_pert(&f, pert.clone());
+//! let jacobian_forward = x.forward_jacobian_pert(&f, &pert);
 //!
 //! // using central differences
-//! let jacobian_central = x.central_jacobian_pert(&f, pert);
+//! let jacobian_central = x.central_jacobian_pert(&f, &pert);
 //!
 //! let res = vec![
 //!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
@@ -427,13 +427,13 @@ where
     fn forward_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian;
 
     fn central_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian;
 
     /// Calculation of the Hessian using forward differences
@@ -533,7 +533,7 @@ where
     fn forward_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         forward_jacobian_pert_vec_f64(self, fs, pert)
     }
@@ -541,7 +541,7 @@ where
     fn central_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         central_jacobian_pert_vec_f64(self, fs, pert)
     }
@@ -611,7 +611,7 @@ where
     fn forward_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         forward_jacobian_pert_ndarray_f64(self, fs, pert)
     }
@@ -619,7 +619,7 @@ where
     fn central_jacobian_pert(
         &self,
         fs: &Fn(&Self) -> Self::OperatorOutput,
-        pert: PerturbationVectors,
+        pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         central_jacobian_pert_ndarray_f64(self, fs, pert)
     }
@@ -823,7 +823,7 @@ mod tests_vec {
 
     #[test]
     fn test_forward_jacobian_pert_vec_f64_trait() {
-        let jacobian = x2().forward_jacobian_pert(&f2, pert());
+        let jacobian = x2().forward_jacobian_pert(&f2, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
@@ -836,7 +836,7 @@ mod tests_vec {
 
     #[test]
     fn test_central_jacobian_pert_vec_f64_trait() {
-        let jacobian = x2().central_jacobian_pert(&f2, pert());
+        let jacobian = x2().central_jacobian_pert(&f2, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
@@ -1097,7 +1097,7 @@ mod tests_ndarray {
 
     #[test]
     fn test_forward_jacobian_pert_ndarray_f64_trait() {
-        let jacobian = x2().forward_jacobian_pert(&f2, pert());
+        let jacobian = x2().forward_jacobian_pert(&f2, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
@@ -1110,7 +1110,7 @@ mod tests_ndarray {
 
     #[test]
     fn test_central_jacobian_pert_ndarray_f64_trait() {
-        let jacobian = x2().central_jacobian_pert(&f2, pert());
+        let jacobian = x2().central_jacobian_pert(&f2, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);

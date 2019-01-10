@@ -79,7 +79,7 @@ pub fn central_jacobian_vec_prod_ndarray_f64(
 pub fn forward_jacobian_pert_ndarray_f64(
     x: &ndarray::Array1<f64>,
     fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
-    pert: PerturbationVectors,
+    pert: &PerturbationVectors,
 ) -> ndarray::Array2<f64> {
     let fx = (fs)(&x);
     let mut xt = x.clone();
@@ -107,7 +107,7 @@ pub fn forward_jacobian_pert_ndarray_f64(
 pub fn central_jacobian_pert_ndarray_f64(
     x: &ndarray::Array1<f64>,
     fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
-    pert: PerturbationVectors,
+    pert: &PerturbationVectors,
 ) -> ndarray::Array2<f64> {
     let mut out = ndarray::Array2::zeros((1, 1));
     let mut xt = x.clone();
@@ -244,7 +244,7 @@ mod tests {
 
     #[test]
     fn test_forward_jacobian_pert_ndarray_f64() {
-        let jacobian = forward_jacobian_pert_ndarray_f64(&x(), &f, pert());
+        let jacobian = forward_jacobian_pert_ndarray_f64(&x(), &f, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
@@ -257,7 +257,7 @@ mod tests {
 
     #[test]
     fn test_central_jacobian_pert_ndarray_f64() {
-        let jacobian = central_jacobian_pert_ndarray_f64(&x(), &f, pert());
+        let jacobian = central_jacobian_pert_ndarray_f64(&x(), &f, &pert());
         let res = res1();
         // println!("jacobian:\n{:?}", jacobian);
         // println!("res:\n{:?}", res);
