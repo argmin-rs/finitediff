@@ -21,7 +21,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! finitediff = "0.1.0"
+//! finitediff = "0.1.1"
 //! ```
 //!
 //! To use the `FiniteDiff` trait implementations on the `ndarray` types, please activate the
@@ -29,7 +29,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! finitediff = { version = "0.1.0", features = ["ndarray"] }
+//! finitediff = { version = "0.1.1", features = ["ndarray"] }
 //! ```
 //!
 //! # Examples

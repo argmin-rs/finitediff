@@ -1,13 +1,13 @@
 [package]
 name = "finitediff"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Stefan Kroboth <stefan.kroboth@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 description = "Finite/numerical differentiation"
 documentation = "https://argmin-rs.github.io/finitediff/finitediff/"
-homepage = "https://github.com/finitediff/finitediff"
-repository = "https://github.com/finitediff/finitediff"
+homepage = "https://github.com/argmin-rs/finitediff"
+repository = "https://github.com/argmin-rs/finitediff"
 readme = "README.md"
 keywords = ["differentiation", "optimization", "math", "science"]
 categories = ["science"]
