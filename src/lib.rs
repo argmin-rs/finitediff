@@ -35,8 +35,6 @@
 //! # Examples
 //!
 //! * [Calculation of the gradient](#calculation-of-the-gradient)
-//!   * [Using forward differences](#using-forward-differences)
-//!   * [Using central differences](#using-central-differences)
 //! * [Calculation of the Jacobian](#calculation-of-the-jacobian)
 //!   * [Full Jacobian](#full-jacobian)
 //!   * [Product of the Jacobian `J(x)` with a vector `p`](#product-of-the-jacobian-jx-with-a-vector-p)
@@ -54,8 +52,6 @@
 //! `Vec<f64>`.
 //! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
 //!
-//! ### Using forward differences
-//!
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
@@ -69,40 +65,18 @@
 //! let x = vec![1.0f64, 1.0];
 //!
 //! // Calculate gradient of `f` at `x` using forward differences
-//! let grad = x.forward_diff(&f);
-//! #
-//! #  // Desired solution
-//! #  let res = vec![1.0f64, 2.0];
-//! #
-//! #  // Check result
-//! #  for i in 0..2 {
-//! #      assert!((res[i] - grad[i]).abs() < 1e-6)
-//! #  }
-//! ```
-//!
-//! ### Using central differences
-//!
-//! ```rust
-//! use finitediff::FiniteDiff;
-//!
-//! // Define cost function `f(x)`
-//! let f = |x: &Vec<f64>| -> f64 {
-//!     // ...
-//! #     x[0] + x[1].powi(2)
-//! };
-//!
-//! // Point at which gradient should be calculated
-//! let x = vec![1.0f64, 1.0];
+//! let grad_forward = x.forward_diff(&f);
 //!
 //! // Calculate gradient of `f` at `x` using central differences
-//! let grad = x.central_diff(&f);
+//! let grad_central = x.central_diff(&f);
 //! #
 //! #  // Desired solution
 //! #  let res = vec![1.0f64, 2.0];
 //! #
 //! #  // Check result
 //! #  for i in 0..2 {
-//! #      assert!((res[i] - grad[i]).abs() < 1e-6)
+//! #      assert!((res[i] - grad_forward[i]).abs() < 1e-6);
+//! #      assert!((res[i] - grad_central[i]).abs() < 1e-6);
 //! #  }
 //! ```
 //!
@@ -259,7 +233,11 @@
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
-//! let hessian = x.forward_hessian(&g);
+//! // using forward differences
+//! let hessian_forward = x.forward_hessian(&g);
+//!
+//! // using central differences
+//! let hessian_central = x.central_hessian(&g);
 //! #
 //! #  let res = vec![
 //! #      vec![0.0, 0.0, 0.0, 0.0],
@@ -271,7 +249,8 @@
 //! #  // Check result
 //! #  for i in 0..4 {
 //! #      for j in 0..4 {
-//! #          assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//! #          assert!((res[i][j] - hessian_forward[i][j]).abs() < 1e-6);
+//! #          assert!((res[i][j] - hessian_central[i][j]).abs() < 1e-6);
 //! #      }
 //! #  }
 //! ```
@@ -289,12 +268,17 @@
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //! let p = vec![2.0, 3.0, 4.0, 5.0];
 //!
-//! let hessian = x.forward_hessian_vec_prod(&g, &p);
+//! // using forward differences
+//! let hessian_forward = x.forward_hessian_vec_prod(&g, &p);
+//!
+//! // using forward differences
+//! let hessian_central = x.central_hessian_vec_prod(&g, &p);
 //! #
 //! #  let res = vec![0.0, 6.0, 10.0, 18.0];
 //! #
 //! #  for i in 0..4 {
-//! #      assert!((res[i] - hessian[i]).abs() < 1e-6)
+//! #      assert!((res[i] - hessian_forward[i]).abs() < 1e-6);
+//! #      assert!((res[i] - hessian_central[i]).abs() < 1e-6);
 //! #  }
 //! ```
 //!
@@ -339,6 +323,8 @@
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
+//! // Indices at which the Hessian should be evaluated. All other
+//! // elements of the Hessian will be zero
 //! let indices = vec![[1, 1], [2, 3], [3, 3]];
 //!
 //! let hessian = x.forward_hessian_nograd_sparse(&f, indices);
