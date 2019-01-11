@@ -2,9 +2,10 @@
 
 # finitediff: Finite Differentiation
 
-Work in progress.
+This crate contains a wide range of methods for the calculation of gradients, Jacobians and Hessians using forward and central differences.
+The methods have been implemented for input vectors of the type `Vec<f64>` and `ndarray::Array1<f64>`.
 
-[Documentation](https://argmin-rs.github.io/finitediff/finitediff/) 
+See the [Documentation](https://argmin-rs.github.io/finitediff/finitediff/) for details.
 
 ## License
 
