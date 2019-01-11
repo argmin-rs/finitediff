@@ -1197,6 +1197,13 @@
 <span id="1197">1197</span>
 <span id="1198">1198</span>
 <span id="1199">1199</span>
+<span id="1200">1200</span>
+<span id="1201">1201</span>
+<span id="1202">1202</span>
+<span id="1203">1203</span>
+<span id="1204">1204</span>
+<span id="1205">1205</span>
+<span id="1206">1206</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2018 argmin developers</span>
 <span class="comment">//</span>
@@ -1221,7 +1228,7 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```toml</span>
 <span class="doccomment">//! [dependencies]</span>
-<span class="doccomment">//! finitediff = { git = &quot;https://github.com/argmin-rs/finitediff&quot; }</span>
+<span class="doccomment">//! finitediff = &quot;0.1.0&quot;</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! To use the `FiniteDiff` trait implementations on the `ndarray` types, please activate the</span>
@@ -1229,14 +1236,12 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```toml</span>
 <span class="doccomment">//! [dependencies]</span>
-<span class="doccomment">//! finitediff = { git = &quot;https://github.com/argmin-rs/finitediff&quot;, features = [&quot;ndarray&quot;] }</span>
+<span class="doccomment">//! finitediff = { version = &quot;0.1.0&quot;, features = [&quot;ndarray&quot;] }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! * [Calculation of the gradient](#calculation-of-the-gradient)</span>
-<span class="doccomment">//!   * [Using forward differences](#using-forward-differences)</span>
-<span class="doccomment">//!   * [Using central differences](#using-central-differences)</span>
 <span class="doccomment">//! * [Calculation of the Jacobian](#calculation-of-the-jacobian)</span>
 <span class="doccomment">//!   * [Full Jacobian](#full-jacobian)</span>
 <span class="doccomment">//!   * [Product of the Jacobian `J(x)` with a vector `p`](#product-of-the-jacobian-jx-with-a-vector-p)</span>
@@ -1254,50 +1259,32 @@
 <span class="doccomment">//! `Vec&lt;f64&gt;`.</span>
 <span class="doccomment">//! Note that the same interface is also implemented for `ndarray::Array1&lt;f64&gt;` (not shown).</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! ### Using forward differences</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! // Define cost function `f(x) = x_0 + x_1^2`</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| x[0] + x[1].powi(2);</span>
+<span class="doccomment">//! // Define cost function `f(x)`</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; f64 {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #     x[0] + x[1].powi(2)</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Point at which gradient should be calculated</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Calculate gradient of `f` at `x` using forward differences</span>
-<span class="doccomment">//! let grad = x.forward_diff(&amp;f);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Desired solution</span>
-<span class="doccomment">//! let res = vec![1.0f64, 2.0];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..2 {</span>
-<span class="doccomment">//!     assert!((res[i] - grad[i]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ### Using central differences</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use finitediff::FiniteDiff;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Define cost function `f(x) = x_0 + x_1^2`</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| x[0] + x[1].powi(2);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Point at which gradient should be calculated</span>
-<span class="doccomment">//! let x = vec![1.0f64, 1.0];</span>
+<span class="doccomment">//! let grad_forward = x.forward_diff(&amp;f);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // Calculate gradient of `f` at `x` using central differences</span>
-<span class="doccomment">//! let grad = x.central_diff(&amp;f);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Desired solution</span>
-<span class="doccomment">//! let res = vec![1.0f64, 2.0];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..2 {</span>
-<span class="doccomment">//!     assert!((res[i] - grad[i]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! let grad_central = x.central_diff(&amp;f);</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Desired solution</span>
+<span class="doccomment">//! #  let res = vec![1.0f64, 2.0];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..2 {</span>
+<span class="doccomment">//! #      assert!((res[i] - grad_forward[i]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #      assert!((res[i] - grad_central[i]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Calculation of the Jacobian</span>
@@ -1309,15 +1296,16 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| {</span>
-<span class="doccomment">//!     vec![</span>
-<span class="doccomment">//!         2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!     ]</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; Vec&lt;f64&gt; {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #      vec![</span>
+<span class="doccomment">//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #      ]</span>
 <span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];</span>
@@ -1328,22 +1316,22 @@
 <span class="doccomment">//! // Using central differences</span>
 <span class="doccomment">//! let jacobian_central = x.central_jacobian(&amp;f);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![</span>
-<span class="doccomment">//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
-<span class="doccomment">//! ];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..6 {</span>
-<span class="doccomment">//!     for j in 0..6 {</span>
-<span class="doccomment">//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() &lt; 1e-6);</span>
-<span class="doccomment">//!         assert!((res[i][j] - jacobian_central[i][j]).abs() &lt; 1e-6);</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! #  let res = vec![</span>
+<span class="doccomment">//! #      vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
+<span class="doccomment">//! #  ];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..6 {</span>
+<span class="doccomment">//! #      for j in 0..6 {</span>
+<span class="doccomment">//! #          assert!((res[i][j] - jacobian_forward[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #          assert!((res[i][j] - jacobian_central[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #      }</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Product of the Jacobian `J(x)` with a vector `p`</span>
@@ -1351,15 +1339,16 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| {</span>
-<span class="doccomment">//!     vec![</span>
-<span class="doccomment">//!         2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!     ]</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; Vec&lt;f64&gt; {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #      vec![</span>
+<span class="doccomment">//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #      ]</span>
 <span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];</span>
@@ -1370,14 +1359,14 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // using central differences</span>
 <span class="doccomment">//! let jacobian_central = x.central_jacobian_vec_prod(&amp;f, &amp;p);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..6 {</span>
-<span class="doccomment">//!     assert!((res[i] - jacobian_forward[i]).abs() &lt; 11.0*1e-6);</span>
-<span class="doccomment">//!     assert!((res[i] - jacobian_central[i]).abs() &lt; 11.0*1e-6);</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..6 {</span>
+<span class="doccomment">//! #      assert!((res[i] - jacobian_forward[i]).abs() &lt; 11.0*1e-6);</span>
+<span class="doccomment">//! #      assert!((res[i] - jacobian_central[i]).abs() &lt; 11.0*1e-6);</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Sparse Jacobian</span>
@@ -1385,15 +1374,16 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::{FiniteDiff, PerturbationVector};</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| {</span>
-<span class="doccomment">//!     vec![</span>
-<span class="doccomment">//!         2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!         3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
-<span class="doccomment">//!     ]</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; Vec&lt;f64&gt; {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #      vec![</span>
+<span class="doccomment">//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),</span>
+<span class="doccomment">//! #      ]</span>
 <span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];</span>
@@ -1415,23 +1405,23 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! // using central differences</span>
 <span class="doccomment">//! let jacobian_central = x.central_jacobian_pert(&amp;f, &amp;pert);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![</span>
-<span class="doccomment">//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
-<span class="doccomment">//! ];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..6 {</span>
-<span class="doccomment">//!     for j in 0..6 {</span>
-<span class="doccomment">//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() &lt; 1e-6);</span>
-<span class="doccomment">//!         assert!((res[i][j] - jacobian_central[i][j]).abs() &lt; 1e-6);</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![</span>
+<span class="doccomment">//! #      vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],</span>
+<span class="doccomment">//! #  ];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..6 {</span>
+<span class="doccomment">//! #      for j in 0..6 {</span>
+<span class="doccomment">//! #          assert!((res[i][j] - jacobian_forward[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #          assert!((res[i][j] - jacobian_central[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #      }</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Calculation of the Hessian</span>
@@ -1443,25 +1433,33 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let g = |x: &amp;Vec&lt;f64&gt;| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];</span>
+<span class="doccomment">//! let g = |x: &amp;Vec&lt;f64&gt;| -&gt; Vec&lt;f64&gt; {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #     vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let hessian = x.forward_hessian(&amp;g);</span>
+<span class="doccomment">//! // using forward differences</span>
+<span class="doccomment">//! let hessian_forward = x.forward_hessian(&amp;g);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 2.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 2.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
-<span class="doccomment">//! ];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..4 {</span>
-<span class="doccomment">//!     for j in 0..4 {</span>
-<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! // using central differences</span>
+<span class="doccomment">//! let hessian_central = x.central_hessian(&amp;g);</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 2.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 2.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 2.0, 2.0],</span>
+<span class="doccomment">//! #  ];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..4 {</span>
+<span class="doccomment">//! #      for j in 0..4 {</span>
+<span class="doccomment">//! #          assert!((res[i][j] - hessian_forward[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #          assert!((res[i][j] - hessian_central[i][j]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #      }</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Product of the Hessian `H(x)` with a vector `p`</span>
@@ -1469,18 +1467,26 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let g = |x: &amp;Vec&lt;f64&gt;| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];</span>
+<span class="doccomment">//! let g = |x: &amp;Vec&lt;f64&gt;| -&gt; Vec&lt;f64&gt; {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #     vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0];</span>
 <span class="doccomment">//! let p = vec![2.0, 3.0, 4.0, 5.0];</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let hessian = x.forward_hessian_vec_prod(&amp;g, &amp;p);</span>
+<span class="doccomment">//! // using forward differences</span>
+<span class="doccomment">//! let hessian_forward = x.forward_hessian_vec_prod(&amp;g, &amp;p);</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![0.0, 6.0, 10.0, 18.0];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! for i in 0..4 {</span>
-<span class="doccomment">//!     assert!((res[i] - hessian[i]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! // using forward differences</span>
+<span class="doccomment">//! let hessian_central = x.central_hessian_vec_prod(&amp;g, &amp;p);</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![0.0, 6.0, 10.0, 18.0];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  for i in 0..4 {</span>
+<span class="doccomment">//! #      assert!((res[i] - hessian_forward[i]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #      assert!((res[i] - hessian_central[i]).abs() &lt; 1e-6);</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Calculation of the Hessian without knowledge of the gradient</span>
@@ -1488,25 +1494,28 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; f64 {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #     x[0] + x[1].powi(2) + x[2] * x[3].powi(2)</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let hessian = x.forward_hessian_nograd(&amp;f);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 2.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 2.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
-<span class="doccomment">//! ];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..4 {</span>
-<span class="doccomment">//!     for j in 0..4 {</span>
-<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 2.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 2.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 2.0, 2.0],</span>
+<span class="doccomment">//! #  ];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..4 {</span>
+<span class="doccomment">//! #      for j in 0..4 {</span>
+<span class="doccomment">//! #          assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//! #      }</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Calculation of the sparse Hessian without knowledge of the gradient</span>
@@ -1514,27 +1523,32 @@
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);</span>
+<span class="doccomment">//! let f = |x: &amp;Vec&lt;f64&gt;| -&gt; f64 {</span>
+<span class="doccomment">//!     // ...</span>
+<span class="doccomment">//! #     x[0] + x[1].powi(2) + x[2] * x[3].powi(2)</span>
+<span class="doccomment">//! };</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let x = vec![1.0f64, 1.0, 1.0, 1.0];</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! // Indices at which the Hessian should be evaluated. All other</span>
+<span class="doccomment">//! // elements of the Hessian will be zero</span>
 <span class="doccomment">//! let indices = vec![[1, 1], [2, 3], [3, 3]];</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let hessian = x.forward_hessian_nograd_sparse(&amp;f, indices);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let res = vec![</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 2.0, 0.0, 0.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 0.0, 2.0],</span>
-<span class="doccomment">//!     vec![0.0, 0.0, 2.0, 2.0],</span>
-<span class="doccomment">//! ];</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // Check result</span>
-<span class="doccomment">//! for i in 0..4 {</span>
-<span class="doccomment">//!     for j in 0..4 {</span>
-<span class="doccomment">//!         assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  let res = vec![</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 2.0, 0.0, 0.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 0.0, 2.0],</span>
+<span class="doccomment">//! #      vec![0.0, 0.0, 2.0, 2.0],</span>
+<span class="doccomment">//! #  ];</span>
+<span class="doccomment">//! #</span>
+<span class="doccomment">//! #  // Check result</span>
+<span class="doccomment">//! #  for i in 0..4 {</span>
+<span class="doccomment">//! #      for j in 0..4 {</span>
+<span class="doccomment">//! #          assert!((res[i][j] - hessian[i][j]).abs() &lt; 1e-6)</span>
+<span class="doccomment">//! #      }</span>
+<span class="doccomment">//! #  }</span>
 <span class="doccomment">//! ```</span>
 
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">ptr_arg</span>)]</span>
