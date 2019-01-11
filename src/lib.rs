@@ -59,22 +59,25 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! // Define cost function `f(x) = x_0 + x_1^2`
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
+//! // Define cost function `f(x)`
+//! let f = |x: &Vec<f64>| -> f64 {
+//!     // ...
+//! #     x[0] + x[1].powi(2)
+//! };
 //!
 //! // Point at which gradient should be calculated
 //! let x = vec![1.0f64, 1.0];
 //!
 //! // Calculate gradient of `f` at `x` using forward differences
 //! let grad = x.forward_diff(&f);
-//!
-//! // Desired solution
-//! let res = vec![1.0f64, 2.0];
-//!
-//! // Check result
-//! for i in 0..2 {
-//!     assert!((res[i] - grad[i]).abs() < 1e-6)
-//! }
+//! #
+//! #  // Desired solution
+//! #  let res = vec![1.0f64, 2.0];
+//! #
+//! #  // Check result
+//! #  for i in 0..2 {
+//! #      assert!((res[i] - grad[i]).abs() < 1e-6)
+//! #  }
 //! ```
 //!
 //! ### Using central differences
@@ -82,22 +85,25 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! // Define cost function `f(x) = x_0 + x_1^2`
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2);
+//! // Define cost function `f(x)`
+//! let f = |x: &Vec<f64>| -> f64 {
+//!     // ...
+//! #     x[0] + x[1].powi(2)
+//! };
 //!
 //! // Point at which gradient should be calculated
 //! let x = vec![1.0f64, 1.0];
 //!
 //! // Calculate gradient of `f` at `x` using central differences
 //! let grad = x.central_diff(&f);
-//!
-//! // Desired solution
-//! let res = vec![1.0f64, 2.0];
-//!
-//! // Check result
-//! for i in 0..2 {
-//!     assert!((res[i] - grad[i]).abs() < 1e-6)
-//! }
+//! #
+//! #  // Desired solution
+//! #  let res = vec![1.0f64, 2.0];
+//! #
+//! #  // Check result
+//! #  for i in 0..2 {
+//! #      assert!((res[i] - grad[i]).abs() < 1e-6)
+//! #  }
 //! ```
 //!
 //! ## Calculation of the Jacobian
@@ -109,15 +115,16 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| {
-//!     vec![
-//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
-//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
-//!     ]
+//! let f = |x: &Vec<f64>| -> Vec<f64> {
+//!     // ...
+//! #      vec![
+//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),
+//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #      ]
 //! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
@@ -128,22 +135,22 @@
 //! // Using central differences
 //! let jacobian_central = x.central_jacobian(&f);
 //!
-//! let res = vec![
-//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-//! ];
-//!
-//! // Check result
-//! for i in 0..6 {
-//!     for j in 0..6 {
-//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
-//!         assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
-//!     }
-//! }
+//! #  let res = vec![
+//! #      vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+//! #      vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+//! #      vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+//! #      vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+//! #      vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+//! #      vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+//! #  ];
+//! #
+//! #  // Check result
+//! #  for i in 0..6 {
+//! #      for j in 0..6 {
+//! #          assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
+//! #          assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
+//! #      }
+//! #  }
 //! ```
 //!
 //! ### Product of the Jacobian `J(x)` with a vector `p`
@@ -151,15 +158,16 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| {
-//!     vec![
-//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
-//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
-//!     ]
+//! let f = |x: &Vec<f64>| -> Vec<f64> {
+//!     // ...
+//! #      vec![
+//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),
+//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #      ]
 //! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
@@ -170,14 +178,14 @@
 //!
 //! // using central differences
 //! let jacobian_central = x.central_jacobian_vec_prod(&f, &p);
-//!
-//! let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
-//!
-//! // Check result
-//! for i in 0..6 {
-//!     assert!((res[i] - jacobian_forward[i]).abs() < 11.0*1e-6);
-//!     assert!((res[i] - jacobian_central[i]).abs() < 11.0*1e-6);
-//! }
+//! #
+//! #  let res = vec![8.0, 22.0, 27.0, 32.0, 37.0, 24.0];
+//! #
+//! #  // Check result
+//! #  for i in 0..6 {
+//! #      assert!((res[i] - jacobian_forward[i]).abs() < 11.0*1e-6);
+//! #      assert!((res[i] - jacobian_central[i]).abs() < 11.0*1e-6);
+//! #  }
 //! ```
 //!
 //! ### Sparse Jacobian
@@ -185,15 +193,16 @@
 //! ```rust
 //! use finitediff::{FiniteDiff, PerturbationVector};
 //!
-//! let f = |x: &Vec<f64>| {
-//!     vec![
-//!         2.0 * (x[1].powi(3) - x[0].powi(2)),
-//!         3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
-//!         3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
-//!         3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
-//!         3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
-//!         3.0 * (x[5].powi(3) - x[4].powi(2)),
-//!     ]
+//! let f = |x: &Vec<f64>| -> Vec<f64> {
+//!     // ...
+//! #      vec![
+//! #          2.0 * (x[1].powi(3) - x[0].powi(2)),
+//! #          3.0 * (x[1].powi(3) - x[0].powi(2)) + 2.0 * (x[2].powi(3) - x[1].powi(2)),
+//! #          3.0 * (x[2].powi(3) - x[1].powi(2)) + 2.0 * (x[3].powi(3) - x[2].powi(2)),
+//! #          3.0 * (x[3].powi(3) - x[2].powi(2)) + 2.0 * (x[4].powi(3) - x[3].powi(2)),
+//! #          3.0 * (x[4].powi(3) - x[3].powi(2)) + 2.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #          3.0 * (x[5].powi(3) - x[4].powi(2)),
+//! #      ]
 //! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0, 1.0, 1.0];
@@ -215,23 +224,23 @@
 //!
 //! // using central differences
 //! let jacobian_central = x.central_jacobian_pert(&f, &pert);
-//!
-//! let res = vec![
-//!     vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
-//!     vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
-//!     vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
-//!     vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
-//!     vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
-//!     vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
-//! ];
-//!
-//! // Check result
-//! for i in 0..6 {
-//!     for j in 0..6 {
-//!         assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
-//!         assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
-//!     }
-//! }
+//! #
+//! #  let res = vec![
+//! #      vec![-4.0, -6.0, 0.0, 0.0, 0.0, 0.0],
+//! #      vec![6.0, 5.0, -6.0, 0.0, 0.0, 0.0],
+//! #      vec![0.0, 6.0, 5.0, -6.0, 0.0, 0.0],
+//! #      vec![0.0, 0.0, 6.0, 5.0, -6.0, 0.0],
+//! #      vec![0.0, 0.0, 0.0, 6.0, 5.0, -6.0],
+//! #      vec![0.0, 0.0, 0.0, 0.0, 6.0, 9.0],
+//! #  ];
+//! #
+//! #  // Check result
+//! #  for i in 0..6 {
+//! #      for j in 0..6 {
+//! #          assert!((res[i][j] - jacobian_forward[i][j]).abs() < 1e-6);
+//! #          assert!((res[i][j] - jacobian_central[i][j]).abs() < 1e-6);
+//! #      }
+//! #  }
 //! ```
 //!
 //! ## Calculation of the Hessian
@@ -243,25 +252,28 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
+//! let g = |x: &Vec<f64>| -> Vec<f64> {
+//!     // ...
+//! #     vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]
+//! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
 //! let hessian = x.forward_hessian(&g);
-//!
-//! let res = vec![
-//!     vec![0.0, 0.0, 0.0, 0.0],
-//!     vec![0.0, 2.0, 0.0, 0.0],
-//!     vec![0.0, 0.0, 0.0, 2.0],
-//!     vec![0.0, 0.0, 2.0, 2.0],
-//! ];
-//!
-//! // Check result
-//! for i in 0..4 {
-//!     for j in 0..4 {
-//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
-//!     }
-//! }
+//! #
+//! #  let res = vec![
+//! #      vec![0.0, 0.0, 0.0, 0.0],
+//! #      vec![0.0, 2.0, 0.0, 0.0],
+//! #      vec![0.0, 0.0, 0.0, 2.0],
+//! #      vec![0.0, 0.0, 2.0, 2.0],
+//! #  ];
+//! #
+//! #  // Check result
+//! #  for i in 0..4 {
+//! #      for j in 0..4 {
+//! #          assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//! #      }
+//! #  }
 //! ```
 //!
 //! ### Product of the Hessian `H(x)` with a vector `p`
@@ -269,18 +281,21 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let g = |x: &Vec<f64>| vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]];
+//! let g = |x: &Vec<f64>| -> Vec<f64> {
+//!     // ...
+//! #     vec![1.0, 2.0 * x[1], x[3].powi(2), 2.0 * x[3] * x[2]]
+//! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //! let p = vec![2.0, 3.0, 4.0, 5.0];
 //!
 //! let hessian = x.forward_hessian_vec_prod(&g, &p);
-//!
-//! let res = vec![0.0, 6.0, 10.0, 18.0];
-//!
-//! for i in 0..4 {
-//!     assert!((res[i] - hessian[i]).abs() < 1e-6)
-//! }
+//! #
+//! #  let res = vec![0.0, 6.0, 10.0, 18.0];
+//! #
+//! #  for i in 0..4 {
+//! #      assert!((res[i] - hessian[i]).abs() < 1e-6)
+//! #  }
 //! ```
 //!
 //! ### Calculation of the Hessian without knowledge of the gradient
@@ -288,25 +303,28 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//! let f = |x: &Vec<f64>| -> f64 {
+//!     // ...
+//! #     x[0] + x[1].powi(2) + x[2] * x[3].powi(2)
+//! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
 //! let hessian = x.forward_hessian_nograd(&f);
-//!
-//! let res = vec![
-//!     vec![0.0, 0.0, 0.0, 0.0],
-//!     vec![0.0, 2.0, 0.0, 0.0],
-//!     vec![0.0, 0.0, 0.0, 2.0],
-//!     vec![0.0, 0.0, 2.0, 2.0],
-//! ];
-//!
-//! // Check result
-//! for i in 0..4 {
-//!     for j in 0..4 {
-//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
-//!     }
-//! }
+//! #
+//! #  let res = vec![
+//! #      vec![0.0, 0.0, 0.0, 0.0],
+//! #      vec![0.0, 2.0, 0.0, 0.0],
+//! #      vec![0.0, 0.0, 0.0, 2.0],
+//! #      vec![0.0, 0.0, 2.0, 2.0],
+//! #  ];
+//! #
+//! #  // Check result
+//! #  for i in 0..4 {
+//! #      for j in 0..4 {
+//! #          assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//! #      }
+//! #  }
 //! ```
 //!
 //! ### Calculation of the sparse Hessian without knowledge of the gradient
@@ -314,27 +332,30 @@
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
-//! let f = |x: &Vec<f64>| x[0] + x[1].powi(2) + x[2] * x[3].powi(2);
+//! let f = |x: &Vec<f64>| -> f64 {
+//!     // ...
+//! #     x[0] + x[1].powi(2) + x[2] * x[3].powi(2)
+//! };
 //!
 //! let x = vec![1.0f64, 1.0, 1.0, 1.0];
 //!
 //! let indices = vec![[1, 1], [2, 3], [3, 3]];
 //!
 //! let hessian = x.forward_hessian_nograd_sparse(&f, indices);
-//!
-//! let res = vec![
-//!     vec![0.0, 0.0, 0.0, 0.0],
-//!     vec![0.0, 2.0, 0.0, 0.0],
-//!     vec![0.0, 0.0, 0.0, 2.0],
-//!     vec![0.0, 0.0, 2.0, 2.0],
-//! ];
-//!
-//! // Check result
-//! for i in 0..4 {
-//!     for j in 0..4 {
-//!         assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
-//!     }
-//! }
+//! #
+//! #  let res = vec![
+//! #      vec![0.0, 0.0, 0.0, 0.0],
+//! #      vec![0.0, 2.0, 0.0, 0.0],
+//! #      vec![0.0, 0.0, 0.0, 2.0],
+//! #      vec![0.0, 0.0, 2.0, 2.0],
+//! #  ];
+//! #
+//! #  // Check result
+//! #  for i in 0..4 {
+//! #      for j in 0..4 {
+//! #          assert!((res[i][j] - hessian[i][j]).abs() < 1e-6)
+//! #      }
+//! #  }
 //! ```
 
 #![allow(clippy::ptr_arg)]
