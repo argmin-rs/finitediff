@@ -52,7 +52,6 @@
 //!
 //! This section illustrates the computation of a gradient of a fuction `f` at a point `x` of type
 //! `Vec<f64>`.
-//! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
 //!
 //! ### For `Vec<f64>`
 //!
