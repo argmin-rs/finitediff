@@ -35,6 +35,8 @@
 //! # Examples
 //!
 //! * [Calculation of the gradient](#calculation-of-the-gradient)
+//!   * [For `Vec<f64>`](#for-vecf64)
+//!   * [For `ndarray::Array1<f64>`](#for-ndarrayarray1f64)
 //! * [Calculation of the Jacobian](#calculation-of-the-jacobian)
 //!   * [Full Jacobian](#full-jacobian)
 //!   * [Product of the Jacobian `J(x)` with a vector `p`](#product-of-the-jacobian-jx-with-a-vector-p)
@@ -52,6 +54,8 @@
 //! `Vec<f64>`.
 //! Note that the same interface is also implemented for `ndarray::Array1<f64>` (not shown).
 //!
+//! ### For `Vec<f64>`
+//!
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
@@ -63,6 +67,37 @@
 //!
 //! // Point at which gradient should be calculated
 //! let x = vec![1.0f64, 1.0];
+//!
+//! // Calculate gradient of `f` at `x` using forward differences
+//! let grad_forward = x.forward_diff(&f);
+//!
+//! // Calculate gradient of `f` at `x` using central differences
+//! let grad_central = x.central_diff(&f);
+//! #
+//! #  // Desired solution
+//! #  let res = vec![1.0f64, 2.0];
+//! #
+//! #  // Check result
+//! #  for i in 0..2 {
+//! #      assert!((res[i] - grad_forward[i]).abs() < 1e-6);
+//! #      assert!((res[i] - grad_central[i]).abs() < 1e-6);
+//! #  }
+//! ```
+//!
+//! ### For `ndarray::Array1<f64>`
+//!
+//! ```rust
+//! use ndarray::{array, Array1};
+//! use finitediff::FiniteDiff;
+//!
+//! // Define cost function `f(x)`
+//! let f = |x: &Array1<f64>| -> f64 {
+//!     // ...
+//! #     x[0] + x[1].powi(2)
+//! };
+//!
+//! // Point at which gradient should be calculated
+//! let x = array![1.0f64, 1.0];
 //!
 //! // Calculate gradient of `f` at `x` using forward differences
 //! let grad_forward = x.forward_diff(&f);
