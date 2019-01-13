@@ -9,6 +9,8 @@
 //! Hessians using forward and central differences.
 //! The methods have been implemented for input vectors of the type `Vec<f64>` and
 //! `ndarray::Array1<f64>`.
+//! Central differences are more accurate but require more evaluations of the cost function and are
+//! therefore computationally more expensive.
 //!
 //! # References
 //!
@@ -51,7 +53,8 @@
 //! ## Calculation of the gradient
 //!
 //! This section illustrates the computation of a gradient of a fuction `f` at a point `x` of type
-//! `Vec<f64>`.
+//! `Vec<f64>`. Using forward differences requires `n+1` evaluations of the function `f` while
+//! central differences requires `2*n` evaluations.
 //!
 //! ### For `Vec<f64>`
 //!
@@ -120,6 +123,8 @@
 //!
 //! ### Full Jacobian
 //!
+//! The calculation of the full Jacobian requires `n+1` evaluations of the function `f`.
+//!
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
@@ -163,6 +168,10 @@
 //!
 //! ### Product of the Jacobian `J(x)` with a vector `p`
 //!
+//! Directly computing `J(x)*p` can be much more efficient than computing `J(x)` first and then
+//! multiplying it with `p`. While computing the full Jacobian `J(x)` requires `n+1` evaluations of
+//! `f`, `J(x)*p` only requires `2`.
+//!
 //! ```rust
 //! use finitediff::FiniteDiff;
 //!
@@ -197,6 +206,9 @@
 //! ```
 //!
 //! ### Sparse Jacobian
+//!
+//! If the Jacobian is sparse its structure can be exploited using perturbation vectors. See
+//! Nocedal & Wright for details.
 //!
 //! ```rust
 //! use finitediff::{FiniteDiff, PerturbationVector};
