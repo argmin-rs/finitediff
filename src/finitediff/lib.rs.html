@@ -1238,6 +1238,18 @@
 <span id="1238">1238</span>
 <span id="1239">1239</span>
 <span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="comment">// Copyright 2018 argmin developers</span>
 <span class="comment">//</span>
@@ -1250,6 +1262,8 @@
 <span class="doccomment">//! Hessians using forward and central differences.</span>
 <span class="doccomment">//! The methods have been implemented for input vectors of the type `Vec&lt;f64&gt;` and</span>
 <span class="doccomment">//! `ndarray::Array1&lt;f64&gt;`.</span>
+<span class="doccomment">//! Central differences are more accurate but require more evaluations of the cost function and are</span>
+<span class="doccomment">//! therefore computationally more expensive.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # References</span>
 <span class="doccomment">//!</span>
@@ -1292,7 +1306,8 @@
 <span class="doccomment">//! ## Calculation of the gradient</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This section illustrates the computation of a gradient of a fuction `f` at a point `x` of type</span>
-<span class="doccomment">//! `Vec&lt;f64&gt;`.</span>
+<span class="doccomment">//! `Vec&lt;f64&gt;`. Using forward differences requires `n+1` evaluations of the function `f` while</span>
+<span class="doccomment">//! central differences requires `2*n` evaluations.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### For `Vec&lt;f64&gt;`</span>
 <span class="doccomment">//!</span>
@@ -1361,6 +1376,8 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Full Jacobian</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! The calculation of the full Jacobian requires `n+1` evaluations of the function `f`.</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
@@ -1404,6 +1421,10 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Product of the Jacobian `J(x)` with a vector `p`</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! Directly computing `J(x)*p` can be much more efficient than computing `J(x)` first and then</span>
+<span class="doccomment">//! multiplying it with `p`. While computing the full Jacobian `J(x)` requires `n+1` evaluations of</span>
+<span class="doccomment">//! `f`, `J(x)*p` only requires `2`.</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::FiniteDiff;</span>
 <span class="doccomment">//!</span>
@@ -1438,6 +1459,9 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ### Sparse Jacobian</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! If the Jacobian is sparse its structure can be exploited using perturbation vectors. See</span>
+<span class="doccomment">//! Nocedal &amp; Wright for details.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! use finitediff::{FiniteDiff, PerturbationVector};</span>

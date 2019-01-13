@@ -1,7 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `finitediff` crate."><meta name="keywords" content="rust, rustlang, rust-lang, finitediff"><title>finitediff - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate finitediff</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all finitediff's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'finitediff', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/finitediff/lib.rs.html#8-1240' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>finitediff</a></span></h1><div class='docblock'><p>This crate contains a wide range of methods for the calculation of gradients, Jacobians and
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `finitediff` crate."><meta name="keywords" content="rust, rustlang, rust-lang, finitediff"><title>finitediff - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate finitediff</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all finitediff's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'finitediff', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/finitediff/lib.rs.html#8-1252' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>finitediff</a></span></h1><div class='docblock'><p>This crate contains a wide range of methods for the calculation of gradients, Jacobians and
 Hessians using forward and central differences.
 The methods have been implemented for input vectors of the type <code>Vec&lt;f64&gt;</code> and
-<code>ndarray::Array1&lt;f64&gt;</code>.</p>
+<code>ndarray::Array1&lt;f64&gt;</code>.
+Central differences are more accurate but require more evaluations of the cost function and are
+therefore computationally more expensive.</p>
 <h1 id="references" class="section-header"><a href="#references">References</a></h1>
 <p>Jorge Nocedal and Stephen J. Wright (2006). Numerical Optimization.
 Springer. ISBN 0-387-30303-0.</p>
@@ -41,7 +43,8 @@ finitediff = { version = &quot;0.1.1&quot;, features = [&quot;ndarray&quot;] }
 </ul>
 <h2 id="calculation-of-the-gradient" class="section-header"><a href="#calculation-of-the-gradient">Calculation of the gradient</a></h2>
 <p>This section illustrates the computation of a gradient of a fuction <code>f</code> at a point <code>x</code> of type
-<code>Vec&lt;f64&gt;</code>.</p>
+<code>Vec&lt;f64&gt;</code>. Using forward differences requires <code>n+1</code> evaluations of the function <code>f</code> while
+central differences requires <code>2*n</code> evaluations.</p>
 <h3 id="for-vecf64" class="section-header"><a href="#for-vecf64">For <code>Vec&lt;f64&gt;</code></a></h3>
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">finitediff</span>::<span class="ident">FiniteDiff</span>;
@@ -80,6 +83,8 @@ finitediff = { version = &quot;0.1.1&quot;, features = [&quot;ndarray&quot;] }
 <h2 id="calculation-of-the-jacobian" class="section-header"><a href="#calculation-of-the-jacobian">Calculation of the Jacobian</a></h2>
 <p>Note that the same interface is also implemented for <code>ndarray::Array1&lt;f64&gt;</code> (not shown).</p>
 <h3 id="full-jacobian" class="section-header"><a href="#full-jacobian">Full Jacobian</a></h3>
+<p>The calculation of the full Jacobian requires <code>n+1</code> evaluations of the function <code>f</code>.</p>
+
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">finitediff</span>::<span class="ident">FiniteDiff</span>;
 
@@ -96,6 +101,10 @@ finitediff = { version = &quot;0.1.1&quot;, features = [&quot;ndarray&quot;] }
 <span class="kw">let</span> <span class="ident">jacobian_central</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">central_jacobian</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>);
 </pre></div>
 <h3 id="product-of-the-jacobian-jx-with-a-vector-p" class="section-header"><a href="#product-of-the-jacobian-jx-with-a-vector-p">Product of the Jacobian <code>J(x)</code> with a vector <code>p</code></a></h3>
+<p>Directly computing <code>J(x)*p</code> can be much more efficient than computing <code>J(x)</code> first and then
+multiplying it with <code>p</code>. While computing the full Jacobian <code>J(x)</code> requires <code>n+1</code> evaluations of
+<code>f</code>, <code>J(x)*p</code> only requires <code>2</code>.</p>
+
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">finitediff</span>::<span class="ident">FiniteDiff</span>;
 
@@ -112,6 +121,9 @@ finitediff = { version = &quot;0.1.1&quot;, features = [&quot;ndarray&quot;] }
 <span class="comment">// using central differences</span>
 <span class="kw">let</span> <span class="ident">jacobian_central</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">central_jacobian_vec_prod</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>, <span class="kw-2">&amp;</span><span class="ident">p</span>);</pre></div>
 <h3 id="sparse-jacobian" class="section-header"><a href="#sparse-jacobian">Sparse Jacobian</a></h3>
+<p>If the Jacobian is sparse its structure can be exploited using perturbation vectors. See
+Nocedal &amp; Wright for details.</p>
+
 <div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">finitediff</span>::{<span class="ident">FiniteDiff</span>, <span class="ident">PerturbationVector</span>};
 
