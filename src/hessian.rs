@@ -11,7 +11,10 @@ use crate::EPS_F64;
 /// I wish this wasn't necessary!
 const EPS_F64_NOGRAD: f64 = EPS_F64 * 2.0;
 
-pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
+pub fn forward_hessian_vec_f64(
+    x: &Vec<f64>,
+    grad: &dyn Fn(&Vec<f64>) -> Vec<f64>,
+) -> Vec<Vec<f64>> {
     let fx = (grad)(x);
     let mut xt = x.clone();
     let out: Vec<Vec<f64>> = (0..x.len())
@@ -28,7 +31,10 @@ pub fn forward_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -
     restore_symmetry_vec_f64(out)
 }
 
-pub fn central_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
+pub fn central_hessian_vec_f64(
+    x: &Vec<f64>,
+    grad: &dyn Fn(&Vec<f64>) -> Vec<f64>,
+) -> Vec<Vec<f64>> {
     let mut xt = x.clone();
     let out: Vec<Vec<f64>> = (0..x.len())
         .map(|i| {
@@ -47,7 +53,7 @@ pub fn central_hessian_vec_f64(x: &Vec<f64>, grad: &Fn(&Vec<f64>) -> Vec<f64>) -
 
 pub fn forward_hessian_vec_prod_vec_f64(
     x: &Vec<f64>,
-    grad: &Fn(&Vec<f64>) -> Vec<f64>,
+    grad: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     p: &Vec<f64>,
 ) -> Vec<f64> {
     let fx = (grad)(x);
@@ -68,7 +74,7 @@ pub fn forward_hessian_vec_prod_vec_f64(
 
 pub fn central_hessian_vec_prod_vec_f64(
     x: &Vec<f64>,
-    grad: &Fn(&Vec<f64>) -> Vec<f64>,
+    grad: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     p: &Vec<f64>,
 ) -> Vec<f64> {
     let out: Vec<f64> = {
@@ -92,7 +98,7 @@ pub fn central_hessian_vec_prod_vec_f64(
     out
 }
 
-pub fn forward_hessian_nograd_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<Vec<f64>> {
+pub fn forward_hessian_nograd_vec_f64(x: &Vec<f64>, f: &dyn Fn(&Vec<f64>) -> f64) -> Vec<Vec<f64>> {
     let fx = (f)(x);
     let n = x.len();
     let mut xt = x.clone();
@@ -125,7 +131,7 @@ pub fn forward_hessian_nograd_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) ->
 
 pub fn forward_hessian_nograd_sparse_vec_f64(
     x: &Vec<f64>,
-    f: &Fn(&Vec<f64>) -> f64,
+    f: &dyn Fn(&Vec<f64>) -> f64,
     indices: Vec<[usize; 2]>,
 ) -> Vec<Vec<f64>> {
     let fx = (f)(x);

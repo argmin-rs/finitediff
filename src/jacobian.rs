@@ -9,7 +9,7 @@ use crate::pert::*;
 use crate::utils::*;
 use crate::EPS_F64;
 
-pub fn forward_jacobian_vec_f64(x: &Vec<f64>, fs: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
+pub fn forward_jacobian_vec_f64(x: &Vec<f64>, fs: &dyn Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
     let fx = (fs)(&x);
     let mut xt = x.clone();
     (0..x.len())
@@ -23,7 +23,7 @@ pub fn forward_jacobian_vec_f64(x: &Vec<f64>, fs: &Fn(&Vec<f64>) -> Vec<f64>) ->
         .collect()
 }
 
-pub fn central_jacobian_vec_f64(x: &Vec<f64>, fs: &Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
+pub fn central_jacobian_vec_f64(x: &Vec<f64>, fs: &dyn Fn(&Vec<f64>) -> Vec<f64>) -> Vec<Vec<f64>> {
     let mut xt = x.clone();
     (0..x.len())
         .map(|i| {
@@ -39,7 +39,7 @@ pub fn central_jacobian_vec_f64(x: &Vec<f64>, fs: &Fn(&Vec<f64>) -> Vec<f64>) ->
 
 pub fn forward_jacobian_vec_prod_vec_f64(
     x: &Vec<f64>,
-    fs: &Fn(&Vec<f64>) -> Vec<f64>,
+    fs: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     p: &Vec<f64>,
 ) -> Vec<f64> {
     let fx = (fs)(&x);
@@ -57,7 +57,7 @@ pub fn forward_jacobian_vec_prod_vec_f64(
 
 pub fn central_jacobian_vec_prod_vec_f64(
     x: &Vec<f64>,
-    fs: &Fn(&Vec<f64>) -> Vec<f64>,
+    fs: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     p: &Vec<f64>,
 ) -> Vec<f64> {
     let x1 = x
@@ -80,7 +80,7 @@ pub fn central_jacobian_vec_prod_vec_f64(
 
 pub fn forward_jacobian_pert_vec_f64(
     x: &Vec<f64>,
-    fs: &Fn(&Vec<f64>) -> Vec<f64>,
+    fs: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     pert: &PerturbationVectors,
 ) -> Vec<Vec<f64>> {
     let fx = (fs)(&x);
@@ -108,7 +108,7 @@ pub fn forward_jacobian_pert_vec_f64(
 
 pub fn central_jacobian_pert_vec_f64(
     x: &Vec<f64>,
-    fs: &Fn(&Vec<f64>) -> Vec<f64>,
+    fs: &dyn Fn(&Vec<f64>) -> Vec<f64>,
     pert: &PerturbationVectors,
 ) -> Vec<Vec<f64>> {
     let mut out = vec![];

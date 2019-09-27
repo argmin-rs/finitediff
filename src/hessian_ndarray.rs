@@ -13,7 +13,7 @@ const EPS_F64_NOGRAD: f64 = EPS_F64 * 2.0;
 
 pub fn forward_hessian_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    grad: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
     // use ndarray::s;
     let mut xt = x.clone();
@@ -36,7 +36,7 @@ pub fn forward_hessian_ndarray_f64(
 
 pub fn central_hessian_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    grad: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
     let mut xt = x.clone();
     // TODO: get rid of this!
@@ -57,7 +57,7 @@ pub fn central_hessian_ndarray_f64(
 
 pub fn forward_hessian_vec_prod_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    grad: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let fx = (grad)(&x);
@@ -68,7 +68,7 @@ pub fn forward_hessian_vec_prod_ndarray_f64(
 
 pub fn central_hessian_vec_prod_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    grad: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    grad: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let x1 = x + &(p.mapv(|pi| pi * EPS_F64.sqrt()));
@@ -80,7 +80,7 @@ pub fn central_hessian_vec_prod_ndarray_f64(
 
 pub fn forward_hessian_nograd_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    f: &dyn Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array2<f64> {
     let fx = (f)(x);
     let n = x.len();
@@ -113,7 +113,7 @@ pub fn forward_hessian_nograd_ndarray_f64(
 
 pub fn forward_hessian_nograd_sparse_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    f: &dyn Fn(&ndarray::Array1<f64>) -> f64,
     indices: Vec<[usize; 2]>,
 ) -> ndarray::Array2<f64> {
     let fx = (f)(x);

@@ -10,7 +10,7 @@ use crate::EPS_F64;
 
 pub fn forward_diff_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    f: &dyn Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array1<f64> {
     let fx = (f)(&x);
     let mut xt = x.clone();
@@ -24,7 +24,7 @@ pub fn forward_diff_ndarray_f64(
 
 pub fn central_diff_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    f: &Fn(&ndarray::Array1<f64>) -> f64,
+    f: &dyn Fn(&ndarray::Array1<f64>) -> f64,
 ) -> ndarray::Array1<f64> {
     let mut xt = x.clone();
     (0..x.len())

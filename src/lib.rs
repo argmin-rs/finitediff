@@ -433,7 +433,7 @@ where
     ///
     /// where `f` is the cost function and `e_i` is the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `n+1` evaluations of `f`.
-    fn forward_diff(&self, f: &Fn(&Self) -> f64) -> Self;
+    fn forward_diff(&self, f: &dyn Fn(&Self) -> f64) -> Self;
 
     /// Central difference calculated as
     ///
@@ -441,7 +441,7 @@ where
     ///
     /// where `f` is the cost function and `e_i` is the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `2*n` evaluations of `f`.
-    fn central_diff(&self, f: &Fn(&Self) -> f64) -> Self;
+    fn central_diff(&self, f: &dyn Fn(&Self) -> f64) -> Self;
 
     /// Calculation of the Jacobian J(x) of a vector function `fs` using forward differences:
     ///
@@ -449,7 +449,7 @@ where
     ///
     /// where `e_i` is the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `n+1` evaluations of `fs`.
-    fn forward_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian;
+    fn forward_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian;
 
     /// Calculation of the Jacobian J(x) of a vector function `fs` using central differences:
     ///
@@ -457,7 +457,7 @@ where
     ///
     /// where `e_i` is the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `2*n` evaluations of `fs`.
-    fn central_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian;
+    fn central_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian;
 
     /// Calculation of the product of the Jacobian J(x) of a vector function `fs` with a vector `p`
     /// using forward differences:
@@ -466,7 +466,11 @@ where
     ///
     /// where `e_i` is the `i`th unit vector.
     /// This requires 2 evaluations of `fs`.
-    fn forward_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self;
+    fn forward_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self;
 
     /// Calculation of the product of the Jacobian J(x) of a vector function `fs` with a vector `p`
     /// using central differences:
@@ -475,17 +479,21 @@ where
     ///
     /// where `e_i` is the `i`th unit vector.
     /// This requires 2 evaluations of `fs`.
-    fn central_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self;
+    fn central_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self;
 
     fn forward_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian;
 
     fn central_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian;
 
@@ -496,7 +504,7 @@ where
     /// where `g` is a function which computes the gradient of some other function f and `e_i` is
     /// the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `n+1` evaluations of `g`.
-    fn forward_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian;
+    fn forward_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian;
 
     /// Calculation of the Hessian using central differences
     ///
@@ -505,7 +513,7 @@ where
     /// where `g` is a function which computes the gradient of some other function f and `e_i` is
     /// the `i`th unit vector.
     /// For a parameter vector of length `n`, this requires `2*n` evaluations of `g`.
-    fn central_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian;
+    fn central_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian;
 
     /// Calculation of the product of the Hessian H(x) of a function `g` with a vector `p`
     /// using forward differences:
@@ -515,7 +523,8 @@ where
     /// where `g` is a function which computes the gradient of some other function f and `e_i` is
     /// the `i`th unit vector.
     /// This requires 2 evaluations of `g`.
-    fn forward_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self;
+    fn forward_hessian_vec_prod(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput, p: &Self)
+        -> Self;
 
     /// Calculation of the product of the Hessian H(x) of a function `g` with a vector `p`
     /// using central differences:
@@ -525,7 +534,8 @@ where
     /// where `g` is a function which computes the gradient of some other function f and `e_i` is
     /// the `i`th unit vector.
     /// This requires 2 evaluations of `g`.
-    fn central_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self;
+    fn central_hessian_vec_prod(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput, p: &Self)
+        -> Self;
 
     /// Calculation of the Hessian using forward differences without knowledge of the gradient:
     ///
@@ -533,7 +543,7 @@ where
     ///
     /// where `e_i` and `e_j` are the `i`th and `j`th unit vector, respectively.
     // /// For a parameter vector of length `n`, this requires `n*(n+1)/2` evaluations of `g`.
-    fn forward_hessian_nograd(&self, f: &Fn(&Self) -> f64) -> Self::Hessian;
+    fn forward_hessian_nograd(&self, f: &dyn Fn(&Self) -> f64) -> Self::Hessian;
 
     /// Calculation of a sparse Hessian using forward differences without knowledge of the gradient:
     ///
@@ -546,7 +556,7 @@ where
     // /// For a parameter vector of length `n`, this requires `n*(n+1)/2` evaluations of `g`.
     fn forward_hessian_nograd_sparse(
         &self,
-        f: &Fn(&Self) -> f64,
+        f: &dyn Fn(&Self) -> f64,
         indices: Vec<[usize; 2]>,
     ) -> Self::Hessian;
 }
@@ -559,33 +569,41 @@ where
     type Hessian = Vec<Vec<f64>>;
     type OperatorOutput = Vec<f64>;
 
-    fn forward_diff(&self, f: &Fn(&Self) -> f64) -> Self {
+    fn forward_diff(&self, f: &dyn Fn(&Self) -> f64) -> Self {
         forward_diff_vec_f64(self, f)
     }
 
-    fn central_diff(&self, f: &Fn(&Self) -> f64) -> Self {
+    fn central_diff(&self, f: &dyn Fn(&Self) -> f64) -> Self {
         central_diff_vec_f64(self, f)
     }
 
-    fn forward_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn forward_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         forward_jacobian_vec_f64(self, fs)
     }
 
-    fn central_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn central_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         central_jacobian_vec_f64(self, fs)
     }
 
-    fn forward_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn forward_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         forward_jacobian_vec_prod_vec_f64(self, fs, p)
     }
 
-    fn central_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn central_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         central_jacobian_vec_prod_vec_f64(self, fs, p)
     }
 
     fn forward_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         forward_jacobian_pert_vec_f64(self, fs, pert)
@@ -593,35 +611,43 @@ where
 
     fn central_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         central_jacobian_pert_vec_f64(self, fs, pert)
     }
 
-    fn forward_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian {
+    fn forward_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian {
         forward_hessian_vec_f64(self, g)
     }
 
-    fn central_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian {
+    fn central_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Hessian {
         central_hessian_vec_f64(self, g)
     }
 
-    fn forward_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn forward_hessian_vec_prod(
+        &self,
+        g: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         forward_hessian_vec_prod_vec_f64(self, g, p)
     }
 
-    fn central_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn central_hessian_vec_prod(
+        &self,
+        g: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         central_hessian_vec_prod_vec_f64(self, g, p)
     }
 
-    fn forward_hessian_nograd(&self, f: &Fn(&Self) -> f64) -> Self::Hessian {
+    fn forward_hessian_nograd(&self, f: &dyn Fn(&Self) -> f64) -> Self::Hessian {
         forward_hessian_nograd_vec_f64(self, f)
     }
 
     fn forward_hessian_nograd_sparse(
         &self,
-        f: &Fn(&Self) -> f64,
+        f: &dyn Fn(&Self) -> f64,
         indices: Vec<[usize; 2]>,
     ) -> Self::Hessian {
         forward_hessian_nograd_sparse_vec_f64(self, f, indices)
@@ -637,33 +663,41 @@ where
     type Hessian = ndarray::Array2<f64>;
     type OperatorOutput = ndarray::Array1<f64>;
 
-    fn forward_diff(&self, f: &Fn(&Self) -> f64) -> Self {
+    fn forward_diff(&self, f: &dyn Fn(&Self) -> f64) -> Self {
         forward_diff_ndarray_f64(self, f)
     }
 
-    fn central_diff(&self, f: &Fn(&ndarray::Array1<f64>) -> f64) -> Self {
+    fn central_diff(&self, f: &dyn Fn(&ndarray::Array1<f64>) -> f64) -> Self {
         central_diff_ndarray_f64(self, f)
     }
 
-    fn forward_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn forward_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         forward_jacobian_ndarray_f64(self, fs)
     }
 
-    fn central_jacobian(&self, fs: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn central_jacobian(&self, fs: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         central_jacobian_ndarray_f64(self, fs)
     }
 
-    fn forward_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn forward_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         forward_jacobian_vec_prod_ndarray_f64(self, fs, p)
     }
 
-    fn central_jacobian_vec_prod(&self, fs: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn central_jacobian_vec_prod(
+        &self,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         central_jacobian_vec_prod_ndarray_f64(self, fs, p)
     }
 
     fn forward_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         forward_jacobian_pert_ndarray_f64(self, fs, pert)
@@ -671,35 +705,43 @@ where
 
     fn central_jacobian_pert(
         &self,
-        fs: &Fn(&Self) -> Self::OperatorOutput,
+        fs: &dyn Fn(&Self) -> Self::OperatorOutput,
         pert: &PerturbationVectors,
     ) -> Self::Jacobian {
         central_jacobian_pert_ndarray_f64(self, fs, pert)
     }
 
-    fn forward_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn forward_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         forward_hessian_ndarray_f64(self, g)
     }
 
-    fn central_hessian(&self, g: &Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
+    fn central_hessian(&self, g: &dyn Fn(&Self) -> Self::OperatorOutput) -> Self::Jacobian {
         central_hessian_ndarray_f64(self, g)
     }
 
-    fn forward_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn forward_hessian_vec_prod(
+        &self,
+        g: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         forward_hessian_vec_prod_ndarray_f64(self, g, p)
     }
 
-    fn central_hessian_vec_prod(&self, g: &Fn(&Self) -> Self::OperatorOutput, p: &Self) -> Self {
+    fn central_hessian_vec_prod(
+        &self,
+        g: &dyn Fn(&Self) -> Self::OperatorOutput,
+        p: &Self,
+    ) -> Self {
         central_hessian_vec_prod_ndarray_f64(self, g, p)
     }
 
-    fn forward_hessian_nograd(&self, f: &Fn(&Self) -> f64) -> Self::Hessian {
+    fn forward_hessian_nograd(&self, f: &dyn Fn(&Self) -> f64) -> Self::Hessian {
         forward_hessian_nograd_ndarray_f64(self, f)
     }
 
     fn forward_hessian_nograd_sparse(
         &self,
-        f: &Fn(&Self) -> f64,
+        f: &dyn Fn(&Self) -> f64,
         indices: Vec<[usize; 2]>,
     ) -> Self::Hessian {
         forward_hessian_nograd_sparse_ndarray_f64(self, f, indices)

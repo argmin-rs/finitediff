@@ -8,7 +8,7 @@
 use crate::utils::*;
 use crate::EPS_F64;
 
-pub fn forward_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
+pub fn forward_diff_vec_f64(x: &Vec<f64>, f: &dyn Fn(&Vec<f64>) -> f64) -> Vec<f64> {
     let fx = (f)(&x);
     let mut xt = x.clone();
     (0..x.len())
@@ -19,7 +19,7 @@ pub fn forward_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> 
         .collect()
 }
 
-pub fn central_diff_vec_f64(x: &Vec<f64>, f: &Fn(&Vec<f64>) -> f64) -> Vec<f64> {
+pub fn central_diff_vec_f64(x: &Vec<f64>, f: &dyn Fn(&Vec<f64>) -> f64) -> Vec<f64> {
     let mut xt = x.clone();
     (0..x.len())
         .map(|i| {

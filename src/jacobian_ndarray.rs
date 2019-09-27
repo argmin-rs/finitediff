@@ -11,7 +11,7 @@ use crate::EPS_F64;
 
 pub fn forward_jacobian_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
     let fx = (fs)(&x);
     let mut xt = x.clone();
@@ -31,7 +31,7 @@ pub fn forward_jacobian_ndarray_f64(
 
 pub fn central_jacobian_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
 ) -> ndarray::Array2<f64> {
     let mut xt = x.clone();
 
@@ -55,7 +55,7 @@ pub fn central_jacobian_ndarray_f64(
 
 pub fn forward_jacobian_vec_prod_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let fx = (fs)(&x);
@@ -66,7 +66,7 @@ pub fn forward_jacobian_vec_prod_ndarray_f64(
 
 pub fn central_jacobian_vec_prod_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     p: &ndarray::Array1<f64>,
 ) -> ndarray::Array1<f64> {
     let x1 = x + &p.mapv(|pi| EPS_F64.sqrt() * pi);
@@ -78,7 +78,7 @@ pub fn central_jacobian_vec_prod_ndarray_f64(
 
 pub fn forward_jacobian_pert_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     pert: &PerturbationVectors,
 ) -> ndarray::Array2<f64> {
     let fx = (fs)(&x);
@@ -106,7 +106,7 @@ pub fn forward_jacobian_pert_ndarray_f64(
 
 pub fn central_jacobian_pert_ndarray_f64(
     x: &ndarray::Array1<f64>,
-    fs: &Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
+    fs: &dyn Fn(&ndarray::Array1<f64>) -> ndarray::Array1<f64>,
     pert: &PerturbationVectors,
 ) -> ndarray::Array2<f64> {
     let mut out = ndarray::Array2::zeros((1, 1));
