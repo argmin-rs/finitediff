@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn test_forward_diff_ndarray_f64() {
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
+        let p = ndarray::Array1::from(vec![1.0f64, 1.0f64]);
 
         let grad = forward_diff_ndarray_f64(&p, &f);
         let res = vec![1.0f64, 2.0];
@@ -58,7 +58,7 @@ mod tests {
             .map(|i| assert!((res[i] - grad[i]).abs() < COMP_ACC))
             .count();
 
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0f64]);
+        let p = ndarray::Array1::from(vec![1.0f64, 2.0f64]);
         let grad = forward_diff_ndarray_f64(&p, &f);
         let res = vec![1.0f64, 4.0];
 
@@ -68,7 +68,7 @@ mod tests {
     }
     #[test]
     fn test_central_diff_ndarray_f64() {
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 1.0f64]);
+        let p = ndarray::Array1::from(vec![1.0f64, 1.0f64]);
 
         let grad = central_diff_ndarray_f64(&p, &f);
         let res = vec![1.0f64, 2.0];
@@ -77,7 +77,7 @@ mod tests {
             .map(|i| assert!((res[i] - grad[i]).abs() < COMP_ACC))
             .count();
 
-        let p = ndarray::Array1::from_vec(vec![1.0f64, 2.0f64]);
+        let p = ndarray::Array1::from(vec![1.0f64, 2.0f64]);
         let grad = central_diff_ndarray_f64(&p, &f);
         let res = vec![1.0f64, 4.0];
 
