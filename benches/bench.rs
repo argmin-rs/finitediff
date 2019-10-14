@@ -105,7 +105,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_diff_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_diff(&cost_ndarray_f64));
         });
@@ -122,7 +122,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn central_diff_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.central_diff(&cost_ndarray_f64));
         });
@@ -139,7 +139,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_jacobian_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_jacobian(&cost_multi_ndarray_f64));
         });
@@ -156,7 +156,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn central_jacobian_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.central_jacobian(&cost_multi_ndarray_f64));
         });
@@ -174,8 +174,8 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_jacobian_vec_prod_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
+        let p = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_jacobian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
@@ -193,8 +193,8 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn central_jacobian_vec_prod_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
+        let p = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_jacobian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
@@ -218,7 +218,7 @@ mod tests {
 
         b.iter(|| {
             let p2 = pert.clone();
-            black_box(x.forward_jacobian_pert(&cost_multi_vec_f64, p2));
+            black_box(x.forward_jacobian_pert(&cost_multi_vec_f64, &p2));
         });
     }
 
@@ -237,11 +237,11 @@ mod tests {
                 .add(5, vec![4, 5]),
         ];
 
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
 
         b.iter(|| {
             let p2 = pert.clone();
-            black_box(x.forward_jacobian_pert(&cost_multi_ndarray_f64, p2));
+            black_box(x.forward_jacobian_pert(&cost_multi_ndarray_f64, &p2));
         });
     }
 
@@ -263,7 +263,7 @@ mod tests {
 
         b.iter(|| {
             let p2 = pert.clone();
-            black_box(x.central_jacobian_pert(&cost_multi_vec_f64, p2));
+            black_box(x.central_jacobian_pert(&cost_multi_vec_f64, &p2));
         });
     }
 
@@ -282,11 +282,11 @@ mod tests {
                 .add(5, vec![4, 5]),
         ];
 
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
 
         b.iter(|| {
             let p2 = pert.clone();
-            black_box(x.central_jacobian_pert(&cost_multi_ndarray_f64, p2));
+            black_box(x.central_jacobian_pert(&cost_multi_ndarray_f64, &p2));
         });
     }
 
@@ -301,7 +301,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_hessian_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_hessian(&cost_multi_ndarray_f64));
         });
@@ -318,7 +318,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn central_hessian_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.central_hessian(&cost_multi_ndarray_f64));
         });
@@ -336,8 +336,8 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_hessian_vec_prod_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
+        let p = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_hessian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
@@ -355,8 +355,8 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn central_hessian_vec_prod_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
-        let p = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
+        let p = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.central_hessian_vec_prod(&cost_multi_ndarray_f64, &p));
         });
@@ -373,7 +373,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_hessian_nograd_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             black_box(x.forward_hessian_nograd(&cost_ndarray_f64));
         });
@@ -391,7 +391,7 @@ mod tests {
     #[cfg(feature = "ndarray")]
     #[bench]
     fn forward_hessian_nograd_sparse_ndarray_f64(b: &mut Bencher) {
-        let x = ndarray::Array1::from_vec(vec![1.0f64; MASSIVENESS]);
+        let x = ndarray::Array1::from(vec![1.0f64; MASSIVENESS]);
         b.iter(|| {
             let indices = vec![[1, 2], [23, 23], [128, 8]];
             black_box(x.forward_hessian_nograd_sparse(&cost_ndarray_f64, indices));
