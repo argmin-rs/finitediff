@@ -92,7 +92,7 @@ pub fn forward_jacobian_pert_ndarray_f64(
         let fx1 = (fs)(&xt);
 
         for j in pert_item.x_idx.iter() {
-            xt[*j] = x[*j];;
+            xt[*j] = x[*j];
         }
 
         for (k, x_idx) in pert_item.x_idx.iter().enumerate() {
