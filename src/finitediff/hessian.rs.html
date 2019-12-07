@@ -302,17 +302,17 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
+    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
+    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
             <span class="ident">fx1</span>.<span class="ident">iter</span>()
                 .<span class="ident">zip</span>(<span class="ident">fx</span>.<span class="ident">iter</span>())
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>()
         })
         .<span class="ident">collect</span>();
 
@@ -322,17 +322,17 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">central_hessian_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
+    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
-    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
+    <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">fx1</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
             <span class="kw">let</span> <span class="ident">fx2</span> <span class="op">=</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">grad</span>, <span class="ident">i</span>, <span class="op">-</span><span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>());
             <span class="ident">fx1</span>.<span class="ident">iter</span>()
                 .<span class="ident">zip</span>(<span class="ident">fx2</span>.<span class="ident">iter</span>())
                 .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span>()
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>()
         })
         .<span class="ident">collect</span>();
 
@@ -342,9 +342,9 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_vec_prod_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">grad</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>
@@ -356,16 +356,16 @@
         <span class="ident">fx1</span>.<span class="ident">iter</span>()
             .<span class="ident">zip</span>(<span class="ident">fx</span>.<span class="ident">iter</span>())
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span>()
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>()
     };
     <span class="ident">out</span>
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">central_hessian_vec_prod_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
+    <span class="ident">grad</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
     <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="ident">x1</span> <span class="op">=</span> <span class="ident">x</span>
             .<span class="ident">iter</span>()
@@ -382,12 +382,12 @@
         <span class="ident">fx1</span>.<span class="ident">iter</span>()
             .<span class="ident">zip</span>(<span class="ident">fx2</span>.<span class="ident">iter</span>())
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">a</span>, <span class="ident">b</span>)<span class="op">|</span> (<span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">EPS_F64</span>.<span class="ident">sqrt</span>()))
-            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span>()
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span>()
     };
     <span class="ident">out</span>
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_vec_f64</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_vec_f64</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
@@ -397,15 +397,15 @@
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">mod_and_calc_vec_f64</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">xt</span>, <span class="ident">f</span>, <span class="ident">i</span>, <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>()))
         .<span class="ident">collect</span>();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
 
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> {
-        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..=<span class="ident">i</span> {
+        <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="op">=</span><span class="ident">i</span> {
             <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
                 <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
                 <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
-                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
-                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
+                <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
+                <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
                 <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
                 <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
                 <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
@@ -420,9 +420,9 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_hessian_nograd_sparse_vec_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
+    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
     <span class="ident">indices</span>: <span class="ident">Vec</span><span class="op">&lt;</span>[<span class="ident">usize</span>; <span class="number">2</span>]<span class="op">&gt;</span>,
-) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="ident">x</span>);
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
@@ -431,7 +431,7 @@
         .<span class="ident">iter</span>()
         .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">iter</span>())
         .<span class="ident">cloned</span>()
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span>();
+        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>();
     <span class="ident">idxs</span>.<span class="ident">sort</span>();
     <span class="ident">idxs</span>.<span class="ident">dedup</span>();
 
@@ -444,13 +444,13 @@
         );
     }
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">out</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>; <span class="ident">n</span>]; <span class="ident">n</span>];
     <span class="kw">for</span> [<span class="ident">i</span>, <span class="ident">j</span>] <span class="kw">in</span> <span class="ident">indices</span> {
         <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">xti</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">i</span>];
             <span class="kw">let</span> <span class="ident">xtj</span> <span class="op">=</span> <span class="ident">xt</span>[<span class="ident">j</span>];
-            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
-            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
+            <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
+            <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">+</span><span class="op">=</span> <span class="ident">EPS_F64_NOGRAD</span>.<span class="ident">sqrt</span>();
             <span class="kw">let</span> <span class="ident">fxij</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">xt</span>);
             <span class="ident">xt</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">xti</span>;
             <span class="ident">xt</span>[<span class="ident">j</span>] <span class="op">=</span> <span class="ident">xtj</span>;
@@ -471,23 +471,23 @@
 
     <span class="kw">const</span> <span class="ident">COMP_ACC</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
 
-    <span class="kw">fn</span> <span class="ident">f</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
+    <span class="kw">fn</span> <span class="ident">f</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span> {
         <span class="ident">x</span>[<span class="number">0</span>] <span class="op">+</span> <span class="ident">x</span>[<span class="number">1</span>].<span class="ident">powi</span>(<span class="number">2</span>) <span class="op">+</span> <span class="ident">x</span>[<span class="number">2</span>] <span class="op">*</span> <span class="ident">x</span>[<span class="number">3</span>].<span class="ident">powi</span>(<span class="number">2</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">g</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">g</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0</span>, <span class="number">2.0</span> <span class="op">*</span> <span class="ident">x</span>[<span class="number">1</span>], <span class="ident">x</span>[<span class="number">3</span>].<span class="ident">powi</span>(<span class="number">2</span>), <span class="number">2.0</span> <span class="op">*</span> <span class="ident">x</span>[<span class="number">3</span>] <span class="op">*</span> <span class="ident">x</span>[<span class="number">2</span>]]
     }
 
-    <span class="kw">fn</span> <span class="ident">x</span>() <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">x</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>]
     }
 
-    <span class="kw">fn</span> <span class="ident">p</span>() <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">p</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>]
     }
 
-    <span class="kw">fn</span> <span class="ident">res1</span>() <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">res1</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="macro">vec</span><span class="macro">!</span>[
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>],
             <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">2.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>],
@@ -496,7 +496,7 @@
         ]
     }
 
-    <span class="kw">fn</span> <span class="ident">res2</span>() <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">res2</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0.0</span>, <span class="number">6.0</span>, <span class="number">10.0</span>, <span class="number">18.0</span>]
     }
 

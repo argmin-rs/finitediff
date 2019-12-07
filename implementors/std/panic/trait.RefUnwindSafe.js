@@ -6,5 +6,4 @@ implementors["finitediff"] = [{text:"impl <a class=\"trait\" href=\"https://doc.
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()

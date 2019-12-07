@@ -47,12 +47,12 @@
     <span class="doccomment">/// x indices</span>
     <span class="kw">pub</span> <span class="ident">x_idx</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     <span class="doccomment">/// correspoding function indices</span>
-    <span class="kw">pub</span> <span class="ident">r_idx</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">r_idx</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">PerturbationVector</span> {
     <span class="doccomment">/// Create a new empty `PerturbationVector`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident">PerturbationVector</span> {
             <span class="ident">x_idx</span>: <span class="macro">vec</span><span class="macro">!</span>[],
             <span class="ident">r_idx</span>: <span class="macro">vec</span><span class="macro">!</span>[],
@@ -60,7 +60,7 @@
     }
 
     <span class="doccomment">/// Add an index `x_idx` and the corresponding function indices `r_idx`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">x_idx</span>: <span class="ident">usize</span>, <span class="ident">r_idx</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">x_idx</span>: <span class="ident">usize</span>, <span class="ident">r_idx</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">x_idx</span>.<span class="ident">push</span>(<span class="ident">x_idx</span>);
         <span class="self">self</span>.<span class="ident">r_idx</span>.<span class="ident">push</span>(<span class="ident">r_idx</span>);
         <span class="self">self</span>

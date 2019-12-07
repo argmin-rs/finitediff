@@ -99,8 +99,8 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_diff_ndarray_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
-) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">fx</span> <span class="op">=</span> (<span class="ident">f</span>)(<span class="kw-2">&amp;</span><span class="ident">x</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
     (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
@@ -113,8 +113,8 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">central_diff_ndarray_f64</span>(
     <span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>,
-    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span>,
-) <span class="op">-&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
+    <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span>,
+) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">xt</span> <span class="op">=</span> <span class="ident">x</span>.<span class="ident">clone</span>();
     (<span class="number">0</span>..<span class="ident">x</span>.<span class="ident">len</span>())
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> {
@@ -132,13 +132,13 @@
 
     <span class="kw">const</span> <span class="ident">COMP_ACC</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">1e-6</span>;
 
-    <span class="kw">fn</span> <span class="ident">f</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">f64</span> {
+    <span class="kw">fn</span> <span class="ident">f</span>(<span class="ident">x</span>: <span class="kw-2">&amp;</span><span class="ident">ndarray</span>::<span class="ident">Array1</span><span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">f64</span> {
         <span class="ident">x</span>[<span class="number">0</span>] <span class="op">+</span> <span class="ident">x</span>[<span class="number">1</span>].<span class="ident">powi</span>(<span class="number">2</span>)
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_forward_diff_ndarray_f64</span>() {
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0f64</span>]);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0f64</span>]);
 
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">forward_diff_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
@@ -147,7 +147,7 @@
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
             .<span class="ident">count</span>();
 
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">forward_diff_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 
@@ -157,7 +157,7 @@
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_central_diff_ndarray_f64</span>() {
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0f64</span>]);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">1.0f64</span>]);
 
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">central_diff_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0</span>];
@@ -166,7 +166,7 @@
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="macro">assert</span><span class="macro">!</span>((<span class="ident">res</span>[<span class="ident">i</span>] <span class="op">-</span> <span class="ident">grad</span>[<span class="ident">i</span>]).<span class="ident">abs</span>() <span class="op">&lt;</span> <span class="ident">COMP_ACC</span>))
             .<span class="ident">count</span>();
 
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from_vec</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
+        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ndarray</span>::<span class="ident">Array1</span>::<span class="ident">from</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">2.0f64</span>]);
         <span class="kw">let</span> <span class="ident">grad</span> <span class="op">=</span> <span class="ident">central_diff_ndarray_f64</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1.0f64</span>, <span class="number">4.0</span>];
 

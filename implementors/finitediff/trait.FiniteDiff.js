@@ -6,5 +6,4 @@ implementors["finitediff"] = [];
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()
