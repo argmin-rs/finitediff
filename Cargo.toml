@@ -21,4 +21,4 @@ ndarray = { version = "0.13.0", optional = true }
 
 [badges]
 travis-ci = { repository = "argmin-rs/finitediff", branch = "master" }
-maintenance = { status = "actively-developed" }
+maintenance = { status = "passively-maintained" }
